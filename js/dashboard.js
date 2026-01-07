@@ -167,7 +167,7 @@ const DashboardModule = {
                     datasets: [{
                         label: 'Holatlar',
                         data: Object.values(stats.facultyCases),
-                        backgroundColor: '#005BBD'
+                        backgroundColor: '#DC143C'
                     }]
                 },
                 options: {
@@ -189,8 +189,8 @@ const DashboardModule = {
                     datasets: [{
                         data: Object.values(stats.symptomDistribution),
                         backgroundColor: [
-                            '#005BBD', '#007BFF', '#28A745', '#FFC107', '#DC3545',
-                            '#17A2B8', '#6F42C1', '#E83E8C', '#FD7E14'
+                            '#DC143C', '#B22222', '#FF1744', '#FFC107', '#DC3545',
+                            '#FF6B6B', '#8B0000', '#E83E8C', '#FD7E14'
                         ]
                     }]
                 },
@@ -210,8 +210,8 @@ const DashboardModule = {
                     datasets: [{
                         label: 'Holatlar',
                         data: stats.weeklyTrend,
-                        borderColor: '#005BBD',
-                        backgroundColor: 'rgba(0, 91, 189, 0.1)',
+                        borderColor: '#DC143C',
+                        backgroundColor: 'rgba(220, 20, 60, 0.1)',
                         fill: true
                     }]
                 },
@@ -232,7 +232,7 @@ const DashboardModule = {
                         label: 'Oylik holatlar',
                         data: stats.monthlyEvolution,
                         borderColor: '#005BBD',
-                        backgroundColor: 'rgba(0, 91, 189, 0.2)',
+                        backgroundColor: 'rgba(220, 20, 60, 0.2)',
                         fill: true
                     }]
                 },

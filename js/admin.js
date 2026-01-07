@@ -53,8 +53,8 @@ const AdminModule = {
                     datasets: [{
                         label: 'Oylik holatlar',
                         data: Object.values(stats.monthlyCases),
-                        borderColor: '#005BBD',
-                        backgroundColor: 'rgba(0, 91, 189, 0.1)',
+                        borderColor: '#DC143C',
+                        backgroundColor: 'rgba(220, 20, 60, 0.1)',
                         fill: true,
                         tension: 0.4
                     }]
@@ -79,7 +79,7 @@ const AdminModule = {
                         label: 'Holatlar',
                         data: Object.values(stats.facultyComparison),
                         backgroundColor: [
-                            '#005BBD', '#007BFF', '#28A745', '#FFC107', '#DC3545', '#17A2B8'
+                            '#DC143C', '#B22222', '#FF1744', '#FFC107', '#DC3545', '#FF6B6B'
                         ]
                     }]
                 },
@@ -100,7 +100,7 @@ const AdminModule = {
         container.innerHTML = `
             <div class="card">
                 <h3 class="card-title" data-i18n="academicPerformanceCorrelation">Akademik ko'rsatkichlar korrelyatsiyasi</h3>
-                <p style="font-size: 1.1rem; line-height: 1.8; color: var(--text-dark);">
+                <p style="font-size: 1.1rem; line-height: 1.8; color: var(--text-white);">
                     ${text}
                 </p>
             </div>
@@ -123,7 +123,7 @@ const AdminModule = {
             <div class="recommendation-cards">
                 ${recommendations.map(rec => `
                     <div class="recommendation-card">
-                        <h4 style="color: var(--primary-blue); margin-bottom: 0.5rem;">${rec.title}</h4>
+                        <h4 style="color: var(--text-white); margin-bottom: 0.5rem;">${rec.title}</h4>
                         <p style="color: var(--text-light);">${rec.description}</p>
                     </div>
                 `).join('')}

@@ -134,9 +134,9 @@ const StudentModule = {
         
         const riskClass = result.risk.toLowerCase();
         const riskColors = {
-            low: 'var(--primary-blue)',
+            low: 'var(--text-white)',
             medium: '#FFC107',
-            high: 'var(--primary-red)'
+            high: 'var(--primary-red-light)'
         };
         
         const resultCard = document.createElement('div');
