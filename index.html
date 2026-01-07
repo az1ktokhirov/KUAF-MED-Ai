@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KUAF MED AI - Bosh sahifa</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo-container">
+                <img src="logo-kuaf.png" alt="KUAF Logo" onerror="this.style.display='none'">
+                <img src="logo-medai.png" alt="MED AI Logo" onerror="this.style.display='none'">
+                <h2>KUAF MED AI</h2>
+            </div>
+            <div class="nav-links">
+                <a href="index.html" data-i18n="dashboard">Boshqaruv paneli</a>
+                <a href="login.html" data-i18n="login">Kirish</a>
+                <div class="lang-switcher">
+                    <button class="lang-btn active" onclick="LanguageManager.setLanguage('uz')">O'zbek</button>
+                    <button class="lang-btn" onclick="LanguageManager.setLanguage('en')">English</button>
+                </div>
+            </div>
+        </nav>
+    </header>
+    
+    <div class="container">
+        <div class="card" style="text-align: center; padding: 4rem 2rem;">
+            <h1 style="color: var(--primary-blue); margin-bottom: 1rem;">KUAF MED AI</h1>
+            <p style="font-size: 1.25rem; color: var(--text-light); margin-bottom: 2rem;">
+                Talabalar sog'liqni kuzatish va boshqarish tizimi
+            </p>
+            
+            <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin-top: 3rem;">
+                <a href="login.html" class="btn btn-primary" data-i18n="login">Kirish</a>
+            </div>
+            
+            <div style="margin-top: 4rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem;">
+                <div class="card">
+                    <h3 style="color: var(--primary-blue); margin-bottom: 1rem;">Talabalar uchun</h3>
+                    <p style="color: var(--text-light); margin-bottom: 1rem;">
+                        Belgilarni yuborish, shifokor bilan uchrashuv belgilash va AI yordamchidan foydalanish
+                    </p>
+                </div>
+                
+                <div class="card">
+                    <h3 style="color: var(--primary-blue); margin-bottom: 1rem;">Shifokorlar uchun</h3>
+                    <p style="color: var(--text-light); margin-bottom: 1rem;">
+                        Talabalar holatini kuzatish, muhim ro'yxatni ko'rish va statistika
+                    </p>
+                </div>
+                
+                <div class="card">
+                    <h3 style="color: var(--primary-blue); margin-bottom: 1rem;">Administratorlar uchun</h3>
+                    <p style="color: var(--text-light); margin-bottom: 1rem;">
+                        Universitet darajasidagi tahlil va tavsiyalar
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="js/mock-api.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
+

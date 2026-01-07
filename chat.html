@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KUAF MED AI - AI Yordamchi</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .loading-dots {
+            display: inline-block;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 0.4; }
+            50% { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo-container">
+                <img src="logo-kuaf.png" alt="KUAF Logo" onerror="this.style.display='none'">
+                <img src="logo-medai.png" alt="MED AI Logo" onerror="this.style.display='none'">
+                <h2>KUAF MED AI</h2>
+            </div>
+            <div class="nav-links">
+                <span id="userName"></span>
+                <a href="student.html" data-i18n="student">Talaba</a>
+                <a href="chat.html" data-i18n="chat">AI Yordamchi</a>
+                <a href="#" onclick="Auth.logout(); return false;" data-i18n="logout">Chiqish</a>
+                <div class="lang-switcher">
+                    <button class="lang-btn active" onclick="LanguageManager.setLanguage('uz')">O'zbek</button>
+                    <button class="lang-btn" onclick="LanguageManager.setLanguage('en')">English</button>
+                </div>
+            </div>
+        </nav>
+    </header>
+    
+    <div class="container">
+        <div class="chat-container">
+            <div id="chatMessages" class="chat-messages"></div>
+            
+            <div id="suggestedReplies" class="suggested-replies"></div>
+            
+            <form id="chatForm" class="chat-input-container">
+                <input type="text" id="chatInput" class="chat-input" 
+                       data-i18n-placeholder="typeMessage" 
+                       placeholder="Xabar yozing..." 
+                       autocomplete="off">
+                <button type="submit" class="btn btn-primary" data-i18n="send">Yuborish</button>
+            </form>
+        </div>
+    </div>
+    
+    <script src="js/mock-api.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/chat.js"></script>
+    <script>
+        if (Auth.isAuthenticated()) {
+            document.getElementById('userName').textContent = Auth.getName() || 'User';
+            ChatModule.init();
+        } else {
+            window.location.href = 'login.html';
+        }
+    </script>
+</body>
+</html>
+

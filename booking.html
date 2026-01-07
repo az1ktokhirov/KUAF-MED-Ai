@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KUAF MED AI - Bron qilish</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo-container">
+                <img src="logo-kuaf.png" alt="KUAF Logo" onerror="this.style.display='none'">
+                <img src="logo-medai.png" alt="MED AI Logo" onerror="this.style.display='none'">
+                <h2>KUAF MED AI</h2>
+            </div>
+            <div class="nav-links">
+                <a href="student.html" data-i18n="student">Talaba</a>
+                <a href="#" onclick="Auth.logout(); return false;" data-i18n="logout">Chiqish</a>
+                <div class="lang-switcher">
+                    <button class="lang-btn active" onclick="LanguageManager.setLanguage('uz')">O'zbek</button>
+                    <button class="lang-btn" onclick="LanguageManager.setLanguage('en')">English</button>
+                </div>
+            </div>
+        </nav>
+    </header>
+    
+    <div class="container">
+        <div class="card">
+            <h2 class="card-title" data-i18n="booking">Bron qilish</h2>
+            
+            <div id="doctorInfo"></div>
+            
+            <form id="bookingForm" style="max-width: 600px; margin: 2rem auto;">
+                <div class="form-group">
+                    <label for="studentName" class="form-label">Talaba ismi</label>
+                    <input type="text" id="studentName" class="form-input" required readonly>
+                </div>
+                
+                <div class="form-group">
+                    <label for="appointmentDate" class="form-label" data-i18n="selectDate">Sanani tanlang</label>
+                    <input type="date" id="appointmentDate" class="form-input" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="appointmentTime" class="form-label" data-i18n="selectTime">Vaqtni tanlang</label>
+                    <input type="time" id="appointmentTime" class="form-input" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="complaint" class="form-label" data-i18n="complaint">Shikoyat</label>
+                    <textarea id="complaint" class="form-textarea" required data-i18n-placeholder="complaintPlaceholder"></textarea>
+                </div>
+                
+                <div style="display: flex; gap: 1rem;">
+                    <button type="submit" class="btn btn-primary" data-i18n="submit">Yuborish</button>
+                    <a href="student.html" class="btn btn-secondary" data-i18n="cancel">Bekor qilish</a>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <script src="js/mock-api.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/booking.js"></script>
+    <script>
+        if (Auth.isAuthenticated()) {
+            BookingModule.init();
+        } else {
+            window.location.href = 'login.html';
+        }
+    </script>
+</body>
+</html>
+

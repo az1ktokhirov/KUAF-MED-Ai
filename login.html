@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KUAF MED AI - Kirish</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-card card">
+            <div class="login-header">
+                <h1>KUAF MED AI</h1>
+                <p>Talabalar sog'liqni kuzatish tizimi</p>
+            </div>
+            
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="email" class="form-label" data-i18n="email">Email</label>
+                    <input type="email" id="email" class="form-input" required placeholder="email@example.com">
+                </div>
+                
+                <div class="form-group">
+                    <label for="password" class="form-label" data-i18n="password">Parol</label>
+                    <input type="password" id="password" class="form-input" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="role" class="form-label" data-i18n="role">Rol</label>
+                    <select id="role" class="form-select" required>
+                        <option value="" data-i18n="selectRole">Rolni tanlang</option>
+                        <option value="student" data-i18n="studentRole">Talaba</option>
+                        <option value="doctor" data-i18n="doctorRole">Shifokor</option>
+                        <option value="admin" data-i18n="adminRole">Administrator</option>
+                    </select>
+                </div>
+                
+                <button type="submit" class="btn btn-primary" style="width: 100%;" data-i18n="login">Kirish</button>
+            </form>
+            
+            <div style="margin-top: 1.5rem; text-align: center;">
+                <div class="lang-switcher" style="justify-content: center;">
+                    <button class="lang-btn active" onclick="LanguageManager.setLanguage('uz')">O'zbek</button>
+                    <button class="lang-btn" onclick="LanguageManager.setLanguage('en')">English</button>
+                </div>
+            </div>
+            
+            <div id="errorMessage" style="margin-top: 1rem; color: var(--primary-red); text-align: center; display: none;"></div>
+        </div>
+    </div>
+    
+    <script src="js/mock-api.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/auth.js"></script>
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const role = document.getElementById('role').value;
+            const errorDiv = document.getElementById('errorMessage');
+            
+            errorDiv.style.display = 'none';
+            
+            if (!role) {
+                errorDiv.textContent = 'Iltimos, rolni tanlang';
+                errorDiv.style.display = 'block';
+                return;
+            }
+            
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            submitBtn.disabled = true;
+            submitBtn.textContent = LanguageManager.t('loading');
+            
+            const result = await Auth.login(email, password, role);
+            
+            if (result.success) {
+                // Redirect based on role
+                if (result.role === 'student') {
+                    window.location.href = 'student.html';
+                } else if (result.role === 'doctor') {
+                    window.location.href = 'dashboard.html';
+                } else if (result.role === 'admin') {
+                    window.location.href = 'admin.html';
+                }
+            } else {
+                errorDiv.textContent = result.message || 'Kirishda xatolik yuz berdi';
+                errorDiv.style.display = 'block';
+                submitBtn.disabled = false;
+                submitBtn.textContent = LanguageManager.t('login');
+            }
+        });
+    </script>
+</body>
+</html>
+
