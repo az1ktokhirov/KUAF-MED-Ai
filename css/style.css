@@ -387,6 +387,54 @@ html {
     min-height: 120px;
 }
 
+/* Select Options */
+.form-select option,
+select option {
+    background: rgba(139, 0, 0, 0.95);
+    color: var(--text-white);
+    padding: 0.5rem;
+}
+
+.form-select option:hover,
+select option:hover {
+    background: rgba(220, 20, 60, 0.8);
+}
+
+.form-select option:checked,
+select option:checked {
+    background: var(--primary-red);
+    color: var(--text-white);
+}
+
+/* For better browser compatibility */
+.form-select option:focus,
+select option:focus {
+    background: var(--primary-red-light);
+}
+
+/* Webkit browsers (Chrome, Safari, Edge) */
+.form-select::-webkit-scrollbar,
+select::-webkit-scrollbar {
+    width: 8px;
+}
+
+.form-select::-webkit-scrollbar-track,
+select::-webkit-scrollbar-track {
+    background: rgba(139, 0, 0, 0.5);
+    border-radius: 4px;
+}
+
+.form-select::-webkit-scrollbar-thumb,
+select::-webkit-scrollbar-thumb {
+    background: var(--primary-red);
+    border-radius: 4px;
+}
+
+.form-select::-webkit-scrollbar-thumb:hover,
+select::-webkit-scrollbar-thumb:hover {
+    background: var(--primary-red-light);
+}
+
 /* Login Page */
 .login-container {
     min-height: calc(100vh - 80px);

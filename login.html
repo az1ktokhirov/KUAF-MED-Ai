@@ -17,7 +17,7 @@
             <form id="loginForm">
                 <div class="form-group">
                     <label for="email" class="form-label" data-i18n="email">Email</label>
-                    <input type="email" id="email" class="form-input" required placeholder="email@example.com">
+                    <input type="email" id="email" class="form-input" required data-i18n-placeholder="emailPlaceholder">
                 </div>
                 
                 <div class="form-group">
@@ -64,7 +64,7 @@
             errorDiv.style.display = 'none';
             
             if (!role) {
-                errorDiv.textContent = 'Iltimos, rolni tanlang';
+                errorDiv.textContent = LanguageManager.t('pleaseSelectRole');
                 errorDiv.style.display = 'block';
                 return;
             }
@@ -85,7 +85,7 @@
                     window.location.href = 'admin.html';
                 }
             } else {
-                errorDiv.textContent = result.message || 'Kirishda xatolik yuz berdi';
+                errorDiv.textContent = result.message || LanguageManager.t('loginError');
                 errorDiv.style.display = 'block';
                 submitBtn.disabled = false;
                 submitBtn.textContent = LanguageManager.t('login');

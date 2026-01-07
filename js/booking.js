@@ -29,7 +29,7 @@ const BookingModule = {
                 this.displayDoctorInfo();
             }
         } catch (error) {
-            Utils.showNotification('Shifokor ma\'lumotlari yuklanmadi', 'error');
+            Utils.showNotification(LanguageManager.t('doctorInfoNotLoaded'), 'error');
         }
     },
     
@@ -37,10 +37,15 @@ const BookingModule = {
         const container = document.getElementById('doctorInfo');
         if (!container || !this.doctor) return;
         
+        let specialtyKey = this.doctor.specialty.toLowerCase().replace(/\s+/g, '');
+        // Handle special cases
+        if (specialtyKey === 'generalpractitioner') specialtyKey = 'generalPractitioner';
+        const translatedSpecialty = LanguageManager.t(specialtyKey) || this.doctor.specialty;
+        
         container.innerHTML = `
             <div class="doctor-card" style="max-width: 500px; margin: 0 auto;">
                 <div class="doctor-name">${this.doctor.name}</div>
-                <div class="doctor-specialty">${this.doctor.specialty}</div>
+                <div class="doctor-specialty">${translatedSpecialty}</div>
                 <div style="margin: 1rem 0; color: var(--text-light);">
                     <div>${LanguageManager.t('experience')}: ${this.doctor.experience}</div>
                     <div>${LanguageManager.t('price')}: ${this.doctor.price}</div>
@@ -82,7 +87,7 @@ const BookingModule = {
         const studentName = document.getElementById('studentName').value;
         
         if (!date || !time || !complaint) {
-            Utils.showNotification('Iltimos, barcha maydonlarni to\'ldiring', 'error');
+            Utils.showNotification(LanguageManager.t('pleaseFillAllFields'), 'error');
             return;
         }
         
@@ -107,7 +112,7 @@ const BookingModule = {
                 }, 2000);
             }
         } catch (error) {
-            Utils.showNotification('Bron qilishda xatolik', 'error');
+            Utils.showNotification(LanguageManager.t('bookingError'), 'error');
         } finally {
             submitBtn.disabled = false;
             submitBtn.textContent = LanguageManager.t('submit');

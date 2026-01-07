@@ -13,7 +13,7 @@ const MockAPI = {
                 status: "success",
                 role: "student",
                 token: "mock_student_token_123",
-                name: "Azizillo Toxir",
+                name: "Azizillo Toxirov",
                 id: 1,
                 faculty: "Computer Science",
                 course: 3
@@ -22,7 +22,7 @@ const MockAPI = {
                 status: "success",
                 role: "doctor",
                 token: "mock_doctor_token_456",
-                name: "Dr. Alisher Navoiy",
+                name: "Dr. Alisher Aliev",
                 id: 1
             },
             admin: {
@@ -34,7 +34,7 @@ const MockAPI = {
             }
         };
 
-        return users[role] || { status: "error", message: "Invalid credentials" };
+        return users[role] || { status: "error", message: LanguageManager.t('invalidCredentials') };
     },
 
     // POST /api/student/report
@@ -54,9 +54,9 @@ const MockAPI = {
         }
 
         const recommendations = {
-            Low: "Get enough rest and drink water. Monitor your symptoms.",
-            Medium: "Consider consulting a doctor if symptoms persist. Rest and stay hydrated.",
-            High: "Please consult a doctor immediately. Your symptoms require medical attention."
+            Low: LanguageManager.t('lowRiskRecommendation'),
+            Medium: LanguageManager.t('mediumRiskRecommendation'),
+            High: LanguageManager.t('highRiskRecommendation')
         };
 
         return {
@@ -76,7 +76,7 @@ const MockAPI = {
         return [
             {
                 id: 1,
-                name: "Dr. Alisher Navoiy",
+                name: "Dr. Alisher Aliev",
                 specialty: "General Practitioner",
                 experience: "15 years",
                 price: "50000 UZS",
@@ -137,7 +137,7 @@ const MockAPI = {
             visits: [
                 {
                     date: "2023-12-20",
-                    doctor: "Dr. Alisher Navoiy",
+                    doctor: "Dr. Alisher Aliev",
                     reason: "High fever and headache"
                 }
             ],
@@ -152,7 +152,7 @@ const MockAPI = {
         let students = [
             {
                 id: 1,
-                name: "Azizillo Toxir",
+                name: "Azizillo Toxirov",
                 faculty: "Computer Science",
                 course: 3,
                 risk: "High",
@@ -192,7 +192,7 @@ const MockAPI = {
             },
             {
                 id: 5,
-                name: "Alisher Navoiy",
+                name: "Alisher Voxidov",
                 faculty: "Business",
                 course: 2,
                 risk: "Low",
@@ -283,7 +283,7 @@ const MockAPI = {
         return {
             status: "success",
             bookingId: Math.floor(Math.random() * 10000),
-            message: "Appointment booked successfully",
+            message: LanguageManager.t('appointmentBookedSuccessfully'),
             doctorId,
             date,
             time,
@@ -294,22 +294,36 @@ const MockAPI = {
     // POST /api/ai/chat
     chat: async (message) => {
         await new Promise(resolve => setTimeout(resolve, MockAPI.delay()));
-        
-        const responses = [
-            "To improve your sleep schedule, try going to bed before 23:00 and maintaining a consistent routine. Avoid screens 1 hour before sleep.",
-            "For stress management, I recommend regular exercise, deep breathing exercises, and taking short breaks during study sessions.",
-            "If you're experiencing headaches frequently, ensure you're staying hydrated, taking regular breaks from screens, and maintaining good posture.",
-            "For fatigue, make sure you're getting 7-9 hours of sleep, eating balanced meals, and staying physically active.",
-            "To reduce eye strain, follow the 20-20-20 rule: every 20 minutes, look at something 20 feet away for 20 seconds.",
-            "For anxiety, try mindfulness meditation, progressive muscle relaxation, or speaking with a counselor.",
-            "If you're experiencing appetite loss, try eating smaller, more frequent meals and staying hydrated.",
-            "For back pain, ensure proper ergonomics, take regular breaks, and consider light stretching exercises."
-        ];
-
-        const reply = responses[Math.floor(Math.random() * responses.length)];
-        
+    
+        const text = message.toLowerCase();
+    
+        let reply = "Iltimos, alomatlaringizni aniqroq tasvirlab bering.";
+    
+        if (text.includes("uyqu") || text.includes("uxlay olmayapman")) {
+            reply = "Uyqu jadvalini yaxshilash uchun soat 23:00 dan oldin uxlashga yoting va doimiy rejimga amal qiling. Uxlashdan 1 soat oldin ekranlardan foydalanmang.";
+        }
+        else if (text.includes("stress") || text.includes("asab")) {
+            reply = "Stressni boshqarish uchun muntazam jismoniy mashqlar, chuqur nafas olish mashqlari va o‘qish paytida qisqa tanaffuslar qilishni tavsiya qilaman.";
+        }
+        else if (text.includes("bosh") || text.includes("boshim og`riyapti")) {
+            reply = "Agar bosh og‘rig‘i tez-tez bezovta qilsa, yetarli suv ichayotganingizga ishonch hosil qiling, ekranlardan muntazam tanaffus qiling va to‘g‘ri holatda o‘tiring.";
+        }
+        else if (text.includes("charchoq") || text.includes("holdan toyish")) {
+            reply = "Charchoqni kamaytirish uchun kuniga 7–9 soat uxlash, muvozanatli ovqatlanish va jismoniy faol bo‘lish muhim.";
+        }
+        else if (text.includes("xavotir") || text.includes("bezovta")) {
+            reply = "Bezovtalikni kamaytirish uchun mindfulness meditatsiyasi, mushaklarni bosqichma-bosqich bo‘shashtirish mashqlari yoki maslahatchi bilan suhbatni sinab ko‘ring.";
+        }
+        else if (text.includes("ishtaha") || text.includes("ovqat yeyolmayapman")) {
+            reply = "Agar ishtaha yo‘qolishi kuzatilsa, kamroq miqdorda, lekin tez-tez ovqatlanishga harakat qiling va yetarli suyuqlik iching.";
+        }
+        else if (text.includes("bel") || text.includes("orqa og`riq")) {
+            reply = "Bel og‘rig‘i uchun to‘g‘ri ergonomikani ta’minlang, muntazam tanaffuslar qiling va yengil cho‘zilish mashqlarini bajaring.";
+        }
+    
         return { reply };
     },
+    
 
     // GET /api/student/profile
     getStudentProfile: async (studentId) => {
@@ -317,7 +331,7 @@ const MockAPI = {
         
         return {
             id: studentId,
-            name: "Azizillo Toxir",
+            name: "Azizillo Toxirov",
             faculty: "Computer Science",
             course: 3,
             email: "azizillo@student.kuaf.uz",

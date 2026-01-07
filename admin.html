@@ -12,7 +12,6 @@
         <nav>
             <div class="logo-container">
                 <img src="logo-kuaf.png" alt="KUAF Logo" onerror="this.style.display='none'">
-                <img src="logo-medai.png" alt="MED AI Logo" onerror="this.style.display='none'">
                 <h2>KUAF MED AI</h2>
             </div>
             <div class="nav-links">
@@ -57,7 +56,7 @@
     <script src="js/admin.js"></script>
     <script>
         if (Auth.isAuthenticated() && Auth.getRole() === 'admin') {
-            document.getElementById('userName').textContent = Auth.getName() || 'Admin';
+            document.getElementById('userName').textContent = Auth.getName() || LanguageManager.t('adminRole');
             AdminModule.init();
         } else {
             window.location.href = 'login.html';

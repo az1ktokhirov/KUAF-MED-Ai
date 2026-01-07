@@ -98,9 +98,13 @@ const lang = {
         academicPerformanceCorrelation: "Akademik ko'rsatkichlar korrelyatsiyasi",
         recommendations: "Tavsiyalar",
         improveMentalHealth: "Ruhiy salomatlik dasturlarini yaxshilash",
+        improveMentalHealthDesc: "Talabalar uchun ruhiy salomatlik dasturlarini kengaytirish va yaxshilash",
         increaseFitness: "Jismoniy faollikni oshirish",
-        nutritionSupport: "Ovqatlanish yordami yaratish",
-        earlyFluDetection: "Erkak gripp aniqlash dasturi",
+        increaseFitnessDesc: "Jismoniy faollikni rag'batlantirish va sport dasturlarini oshirish",
+        nutritionSupport: "To'g'ri ovqatlanish",
+        nutritionSupportDesc: "To'g'ri ovqatlanish bo'yicha maslahat va yordam dasturlari yaratish",
+        earlyFluDetection: "Kasaliklarni erta aniqlash",
+        earlyFluDetectionDesc: "Kasalliklarni erta aniqlash tizimini joriy etish",
         
         // Chat
         aiAssistant: "AI Yordamchi",
@@ -115,7 +119,97 @@ const lang = {
         // History
         medicalHistory: "Tibbiy tarix",
         previousReports: "Oldingi hisobotlar",
-        lastVisits: "So'nggi tashriflar"
+        lastVisits: "So'nggi tashriflar",
+        
+        // Error messages
+        pleaseSelectRole: "Iltimos, rolni tanlang",
+        loginError: "Kirishda xatolik yuz berdi",
+        networkError: "Tarmoq xatoligi",
+        loginFailed: "Kirish muvaffaqiyatsiz",
+        invalidCredentials: "Noto'g'ri ma'lumotlar",
+        noResultsFound: "Hech qanday natija topilmadi",
+        errorOccurred: "Xatolik yuz berdi",
+        profileNotLoaded: "Profil yuklanmadi",
+        doctorsNotLoaded: "Shifokorlar yuklanmadi",
+        doctorInfoNotLoaded: "Shifokor ma'lumotlari yuklanmadi",
+        pleaseFillAllFields: "Iltimos, barcha maydonlarni to'ldiring",
+        bookingError: "Bron qilishda xatolik",
+        pleaseSelectAtLeastOneSymptom: "Iltimos, kamida bitta belgi tanlang",
+        chatError: "Kechirasiz, xatolik yuz berdi. Iltimos, qayta urinib ko'ring.",
+        
+        // Form labels
+        studentName: "Talaba ismi",
+        name: "Ism",
+        user: "Foydalanuvchi",
+        faculty: "Fakultet",
+        course: "Kurs",
+        risk: "Xavf",
+        score: "Ball",
+        actions: "Amallar",
+        emailLabel: "Email",
+        phone: "Telefon",
+        pastSymptoms: "O'tmish belgilari",
+        reports: "Hisobotlar",
+        profile: "Profil",
+        
+        // Dropdown options
+        all: "Barchasi",
+        computerScience: "Kompyuter fanlari",
+        medicine: "Tibbiyot",
+        engineering: "Muhandislik",
+        business: "Biznes",
+        law: "Huquq",
+        course1: "1-kurs",
+        course2: "2-kurs",
+        course3: "3-kurs",
+        course4: "4-kurs",
+        
+        // Recommendations
+        lowRiskRecommendation: "Yetarlicha dam oling va suv iching. Belgilaringizni kuzatib boring.",
+        mediumRiskRecommendation: "Agar belgilar davom etsa, shifokor bilan maslahatlashing. Dam oling va suv iching.",
+        highRiskRecommendation: "Iltimos, darhol shifokor bilan maslahatlashing. Sizning belgilaringiz tibbiy yordam talab qiladi.",
+        
+        // Chat
+        welcomeMessage: "Salom! Men KUAF MED AI yordamchisiman. Sizga qanday yordam bera olaman?",
+        suggestedReply1: "Uyqusizlikni qanday yengish mumkin?",
+        suggestedReply2: "Stressni kamaytirish uchun nima qilish kerak?",
+        suggestedReply3: "Bosh og`rig`i uchun maslahat",
+        suggestedReply4: "Ishtaham yo'q",
+        
+        // Placeholders
+        emailPlaceholder: "email@misol.uz",
+        
+        // Days of week
+        monday: "Dushanba",
+        tuesday: "Seshanba",
+        wednesday: "Chorshanba",
+        thursday: "Payshanba",
+        friday: "Juma",
+        saturday: "Shanba",
+        sunday: "Yakshanba",
+        
+        // Months
+        jan: "Yan",
+        feb: "Fev",
+        mar: "Mar",
+        apr: "Apr",
+        may: "May",
+        jun: "Iyun",
+        jul: "Iyul",
+        aug: "Avg",
+        sep: "Sen",
+        oct: "Okt",
+        nov: "Noy",
+        dec: "Dek",
+        
+        // Doctor specialties
+        generalPractitioner: "Umumiy shifokor",
+        psychologist: "Psixolog",
+        cardiologist: "Kardiolog",
+        neurologist: "Nevrolog",
+        
+        // Booking
+        appointmentBookedSuccessfully: "Uchrashuv muvaffaqiyatli belgilandi"
     },
     en: {
         // Navigation
@@ -214,9 +308,13 @@ const lang = {
         academicPerformanceCorrelation: "Academic Performance Correlation",
         recommendations: "Recommendations",
         improveMentalHealth: "Improve mental health programs",
+        improveMentalHealthDesc: "Expand and improve mental health programs for students",
         increaseFitness: "Increase fitness activities",
+        increaseFitnessDesc: "Encourage physical activity and increase sports programs",
         nutritionSupport: "Create nutrition support",
+        nutritionSupportDesc: "Create nutrition advice and support programs",
         earlyFluDetection: "Early flu detection program",
+        earlyFluDetectionDesc: "Implement early detection system for flu and other diseases",
         
         // Chat
         aiAssistant: "AI Assistant",
@@ -231,7 +329,97 @@ const lang = {
         // History
         medicalHistory: "Medical History",
         previousReports: "Previous Reports",
-        lastVisits: "Last Visits"
+        lastVisits: "Last Visits",
+        
+        // Error messages
+        pleaseSelectRole: "Please select a role",
+        loginError: "Login error occurred",
+        networkError: "Network error",
+        loginFailed: "Login failed",
+        invalidCredentials: "Invalid credentials",
+        noResultsFound: "No results found",
+        errorOccurred: "An error occurred",
+        profileNotLoaded: "Profile not loaded",
+        doctorsNotLoaded: "Doctors not loaded",
+        doctorInfoNotLoaded: "Doctor information not loaded",
+        pleaseFillAllFields: "Please fill all fields",
+        bookingError: "Booking error",
+        pleaseSelectAtLeastOneSymptom: "Please select at least one symptom",
+        chatError: "Sorry, an error occurred. Please try again.",
+        
+        // Form labels
+        studentName: "Student Name",
+        name: "Name",
+        user: "User",
+        faculty: "Faculty",
+        course: "Course",
+        risk: "Risk",
+        score: "Score",
+        actions: "Actions",
+        emailLabel: "Email",
+        phone: "Phone",
+        pastSymptoms: "Past Symptoms",
+        reports: "Reports",
+        profile: "Profile",
+        
+        // Dropdown options
+        all: "All",
+        computerScience: "Computer Science",
+        medicine: "Medicine",
+        engineering: "Engineering",
+        business: "Business",
+        law: "Law",
+        course1: "1st Year",
+        course2: "2nd Year",
+        course3: "3rd Year",
+        course4: "4th Year",
+        
+        // Recommendations
+        lowRiskRecommendation: "Get enough rest and drink water. Monitor your symptoms.",
+        mediumRiskRecommendation: "Consider consulting a doctor if symptoms persist. Rest and stay hydrated.",
+        highRiskRecommendation: "Please consult a doctor immediately. Your symptoms require medical attention.",
+        
+        // Chat
+        welcomeMessage: "Hello! I'm the KUAF MED AI assistant. How can I help you?",
+        suggestedReply1: "How to overcome insomnia?",
+        suggestedReply2: "What to do to reduce stress?",
+        suggestedReply3: "Advice for headache",
+        suggestedReply4: "How to prevent eye strain?",
+        
+        // Placeholders
+        emailPlaceholder: "email@example.com",
+        
+        // Days of week
+        monday: "Monday",
+        tuesday: "Tuesday",
+        wednesday: "Wednesday",
+        thursday: "Thursday",
+        friday: "Friday",
+        saturday: "Saturday",
+        sunday: "Sunday",
+        
+        // Months
+        jan: "Jan",
+        feb: "Feb",
+        mar: "Mar",
+        apr: "Apr",
+        may: "May",
+        jun: "Jun",
+        jul: "Jul",
+        aug: "Aug",
+        sep: "Sep",
+        oct: "Oct",
+        nov: "Nov",
+        dec: "Dec",
+        
+        // Doctor specialties
+        generalPractitioner: "General Practitioner",
+        psychologist: "Psychologist",
+        cardiologist: "Cardiologist",
+        neurologist: "Neurologist",
+        
+        // Booking
+        appointmentBookedSuccessfully: "Appointment booked successfully"
     }
 };
 
@@ -258,6 +446,12 @@ const LanguageManager = {
         document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
             const key = el.getAttribute('data-i18n-placeholder');
             el.placeholder = this.t(key);
+        });
+        
+        // Update select options
+        document.querySelectorAll('select option[data-i18n]').forEach(option => {
+            const key = option.getAttribute('data-i18n');
+            option.textContent = this.t(key);
         });
         
         // Update language switcher buttons

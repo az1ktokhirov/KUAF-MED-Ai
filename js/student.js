@@ -92,7 +92,7 @@ const StudentModule = {
     
     async submitSymptoms() {
         if (this.selectedSymptoms.length === 0) {
-            Utils.showNotification('Iltimos, kamida bitta belgi tanlang', 'error');
+            Utils.showNotification(LanguageManager.t('pleaseSelectAtLeastOneSymptom'), 'error');
             return;
         }
         
@@ -193,11 +193,16 @@ const StudentModule = {
             const grid = doctorsContainer.querySelector('.doctors-grid');
             
             doctors.forEach(doctor => {
+                let specialtyKey = doctor.specialty.toLowerCase().replace(/\s+/g, '');
+                // Handle special cases
+                if (specialtyKey === 'generalpractitioner') specialtyKey = 'generalPractitioner';
+                const translatedSpecialty = LanguageManager.t(specialtyKey) || doctor.specialty;
+                
                 const card = document.createElement('div');
                 card.className = 'doctor-card';
                 card.innerHTML = `
                     <div class="doctor-name">${doctor.name}</div>
-                    <div class="doctor-specialty">${doctor.specialty}</div>
+                    <div class="doctor-specialty">${translatedSpecialty}</div>
                     <div style="margin: 1rem 0; color: var(--text-light);">
                         <div>${LanguageManager.t('experience')}: ${doctor.experience}</div>
                         <div>${LanguageManager.t('price')}: ${doctor.price}</div>
@@ -209,7 +214,7 @@ const StudentModule = {
                 grid.appendChild(card);
             });
         } catch (error) {
-            doctorsContainer.innerHTML = '<p>Shifokorlar yuklanmadi</p>';
+            doctorsContainer.innerHTML = `<p>${LanguageManager.t('doctorsNotLoaded')}</p>`;
         }
     },
     

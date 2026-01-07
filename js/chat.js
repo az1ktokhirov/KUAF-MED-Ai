@@ -39,7 +39,7 @@ const ChatModule = {
     addWelcomeMessage() {
         const welcomeMessage = {
             type: 'assistant',
-            text: 'Salom! Men KUAF MED AI yordamchisiman. Sizga qanday yordam bera olaman?'
+            text: LanguageManager.t('welcomeMessage')
         };
         
         this.addMessage(welcomeMessage);
@@ -47,10 +47,10 @@ const ChatModule = {
     
     setupSuggestedReplies() {
         const replies = [
-            'Uyqusizlikni qanday yengish mumkin?',
-            'Stressni kamaytirish uchun nima qilish kerak?',
-            'Bosh og\'rig\'i uchun maslahat',
-            'Ko\'z charchog\'ini qanday oldini olish mumkin?'
+            LanguageManager.t('suggestedReply1'),
+            LanguageManager.t('suggestedReply2'),
+            LanguageManager.t('suggestedReply3'),
+            LanguageManager.t('suggestedReply4')
         ];
         
         const container = document.getElementById('suggestedReplies');
@@ -94,7 +94,7 @@ const ChatModule = {
             this.removeMessage(loadingId);
             this.addMessage({
                 type: 'assistant',
-                text: 'Kechirasiz, xatolik yuz berdi. Iltimos, qayta urinib ko\'ring.'
+                text: LanguageManager.t('chatError')
             });
         }
     },

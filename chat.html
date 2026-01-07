@@ -45,8 +45,7 @@
             
             <form id="chatForm" class="chat-input-container">
                 <input type="text" id="chatInput" class="chat-input" 
-                       data-i18n-placeholder="typeMessage" 
-                       placeholder="Xabar yozing..." 
+                       data-i18n-placeholder="typeMessage"
                        autocomplete="off">
                 <button type="submit" class="btn btn-primary" data-i18n="send">Yuborish</button>
             </form>
@@ -59,7 +58,7 @@
     <script src="js/chat.js"></script>
     <script>
         if (Auth.isAuthenticated()) {
-            document.getElementById('userName').textContent = Auth.getName() || 'User';
+            document.getElementById('userName').textContent = Auth.getName() || LanguageManager.t('user');
             ChatModule.init();
         } else {
             window.location.href = 'login.html';

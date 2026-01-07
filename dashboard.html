@@ -12,7 +12,6 @@
         <nav>
             <div class="logo-container">
                 <img src="logo-kuaf.png" alt="KUAF Logo" onerror="this.style.display='none'">
-                <img src="logo-medai.png" alt="MED AI Logo" onerror="this.style.display='none'">
                 <h2>KUAF MED AI</h2>
             </div>
             <div class="nav-links">
@@ -37,33 +36,33 @@
                 <div class="filter-group">
                     <label for="filterFaculty" class="form-label" data-i18n="byFaculty">Fakultet bo'yicha</label>
                     <select id="filterFaculty" class="form-select">
-                        <option value="">Barchasi</option>
-                        <option value="Computer Science">Kompyuter fanlari</option>
-                        <option value="Medicine">Tibbiyot</option>
-                        <option value="Engineering">Muhandislik</option>
-                        <option value="Business">Biznes</option>
-                        <option value="Law">Huquq</option>
+                        <option value="" data-i18n="all">Barchasi</option>
+                        <option value="Computer Science" data-i18n="computerScience">Kompyuter fanlari</option>
+                        <option value="Medicine" data-i18n="medicine">Tibbiyot</option>
+                        <option value="Engineering" data-i18n="engineering">Muhandislik</option>
+                        <option value="Business" data-i18n="business">Biznes</option>
+                        <option value="Law" data-i18n="law">Huquq</option>
                     </select>
                 </div>
                 
                 <div class="filter-group">
                     <label for="filterCourse" class="form-label" data-i18n="byCourse">Kurs bo'yicha</label>
                     <select id="filterCourse" class="form-select">
-                        <option value="">Barchasi</option>
-                        <option value="1">1-kurs</option>
-                        <option value="2">2-kurs</option>
-                        <option value="3">3-kurs</option>
-                        <option value="4">4-kurs</option>
+                        <option value="" data-i18n="all">Barchasi</option>
+                        <option value="1" data-i18n="course1">1-kurs</option>
+                        <option value="2" data-i18n="course2">2-kurs</option>
+                        <option value="3" data-i18n="course3">3-kurs</option>
+                        <option value="4" data-i18n="course4">4-kurs</option>
                     </select>
                 </div>
                 
                 <div class="filter-group">
                     <label for="filterRisk" class="form-label" data-i18n="byRisk">Xavf bo'yicha</label>
                     <select id="filterRisk" class="form-select">
-                        <option value="">Barchasi</option>
-                        <option value="High">Yuqori</option>
-                        <option value="Medium">O'rtacha</option>
-                        <option value="Low">Past</option>
+                        <option value="" data-i18n="all">Barchasi</option>
+                        <option value="High" data-i18n="highRisk">Yuqori</option>
+                        <option value="Medium" data-i18n="mediumRisk">O'rtacha</option>
+                        <option value="Low" data-i18n="lowRisk">Past</option>
                     </select>
                 </div>
                 
@@ -80,13 +79,13 @@
                 <table>
                     <thead>
                         <tr>
-                            <th>Ism</th>
-                            <th>Fakultet</th>
-                            <th>Kurs</th>
-                            <th>Xavf</th>
-                            <th>Ball</th>
-                            <th>Prioritet</th>
-                            <th>Amallar</th>
+                            <th data-i18n="name">Ism</th>
+                            <th data-i18n="faculty">Fakultet</th>
+                            <th data-i18n="course">Kurs</th>
+                            <th data-i18n="risk">Xavf</th>
+                            <th data-i18n="score">Ball</th>
+                            <th data-i18n="priority">Prioritet</th>
+                            <th data-i18n="actions">Amallar</th>
                         </tr>
                     </thead>
                     <tbody id="hotListBody">
@@ -137,7 +136,7 @@
     <script src="js/dashboard.js"></script>
     <script>
         if (Auth.isAuthenticated() && Auth.getRole() === 'doctor') {
-            document.getElementById('userName').textContent = Auth.getName() || 'Doctor';
+            document.getElementById('userName').textContent = Auth.getName() || LanguageManager.t('doctorRole');
             DashboardModule.init();
         } else {
             window.location.href = 'login.html';

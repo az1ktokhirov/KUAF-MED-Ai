@@ -52,7 +52,7 @@ const DashboardModule = {
             const students = await MockAPI.getHotList(filters);
             
             if (students.length === 0) {
-                tableBody.innerHTML = '<tr><td colspan="6" style="text-align: center;">Hech qanday natija topilmadi</td></tr>';
+                tableBody.innerHTML = `<tr><td colspan="7" style="text-align: center;">${LanguageManager.t('noResultsFound')}</td></tr>`;
                 return;
             }
             
@@ -78,14 +78,14 @@ const DashboardModule = {
                     <td>
                         <button class="btn btn-primary" style="padding: 0.5rem 1rem; font-size: 0.9rem;" 
                                 onclick="DashboardModule.showStudentProfile(${student.id})">
-                            Profil
+                            ${LanguageManager.t('profile')}
                         </button>
                     </td>
                 `;
                 tableBody.appendChild(row);
             });
         } catch (error) {
-            tableBody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: var(--primary-red);">Xatolik yuz berdi</td></tr>';
+            tableBody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: var(--primary-red);">${LanguageManager.t('errorOccurred')}</td></tr>`;
         }
     },
     
@@ -103,25 +103,33 @@ const DashboardModule = {
                 <button class="modal-close" onclick="DashboardModule.closeModal()">&times;</button>
                 <h2 style="margin-bottom: 1.5rem;">${profile.name}</h2>
                 <div style="margin-bottom: 1rem;">
-                    <strong>Fakultet:</strong> ${profile.faculty}<br>
-                    <strong>Kurs:</strong> ${profile.course}<br>
-                    <strong>Email:</strong> ${profile.email}<br>
-                    <strong>Telefon:</strong> ${profile.phone}
+                    <strong>${LanguageManager.t('faculty')}:</strong> ${profile.faculty}<br>
+                    <strong>${LanguageManager.t('course')}:</strong> ${profile.course}<br>
+                    <strong>${LanguageManager.t('emailLabel')}:</strong> ${profile.email}<br>
+                    <strong>${LanguageManager.t('phone')}:</strong> ${profile.phone}
                 </div>
-                <h3 style="margin: 1.5rem 0 1rem 0;">O'tmish belgilari:</h3>
+                <h3 style="margin: 1.5rem 0 1rem 0;">${LanguageManager.t('pastSymptoms')}:</h3>
                 <div class="history-symptoms">
-                    ${profile.pastSymptoms.map(s => `<span class="symptom-tag">${s}</span>`).join('')}
+                    ${profile.pastSymptoms.map(s => {
+                        const symptomKey = s.toLowerCase().replace(/\s+/g, '');
+                        const translatedSymptom = LanguageManager.t(symptomKey) || s;
+                        return `<span class="symptom-tag">${translatedSymptom}</span>`;
+                    }).join('')}
                 </div>
-                <h3 style="margin: 1.5rem 0 1rem 0;">Hisobotlar:</h3>
+                <h3 style="margin: 1.5rem 0 1rem 0;">${LanguageManager.t('reports')}:</h3>
                 <div>
                     ${history.reports.slice(0, 5).map(report => `
                         <div class="history-item">
                             <div class="history-date">${Utils.formatDate(report.date)}</div>
                             <div class="history-symptoms">
-                                ${report.symptoms.map(s => `<span class="symptom-tag">${s}</span>`).join('')}
+                                ${report.symptoms.map(s => {
+                                    const symptomKey = s.toLowerCase().replace(/\s+/g, '');
+                                    const translatedSymptom = LanguageManager.t(symptomKey) || s;
+                                    return `<span class="symptom-tag">${translatedSymptom}</span>`;
+                                }).join('')}
                             </div>
                             <span class="priority-badge priority-${report.risk.toLowerCase()}">
-                                ${report.risk} - ${report.score}
+                                ${LanguageManager.t(`${report.risk.toLowerCase()}Risk`)} - ${report.score}
                             </span>
                         </div>
                     `).join('')}
@@ -130,7 +138,7 @@ const DashboardModule = {
             
             modal.classList.add('active');
         } catch (error) {
-            Utils.showNotification('Profil yuklanmadi', 'error');
+            Utils.showNotification(LanguageManager.t('profileNotLoaded'), 'error');
         }
     },
     
@@ -163,9 +171,12 @@ const DashboardModule = {
             this.charts.faculty = new Chart(facultyCtx, {
                 type: 'bar',
                 data: {
-                    labels: Object.keys(stats.facultyCases),
+                    labels: Object.keys(stats.facultyCases).map(faculty => {
+                        const facultyKey = faculty.toLowerCase().replace(/\s+/g, '');
+                        return LanguageManager.t(facultyKey) || faculty;
+                    }),
                     datasets: [{
-                        label: 'Holatlar',
+                        label: LanguageManager.t('casesPerFaculty'),
                         data: Object.values(stats.facultyCases),
                         backgroundColor: '#DC143C'
                     }]
@@ -185,7 +196,10 @@ const DashboardModule = {
             this.charts.symptom = new Chart(symptomCtx, {
                 type: 'pie',
                 data: {
-                    labels: Object.keys(stats.symptomDistribution),
+                    labels: Object.keys(stats.symptomDistribution).map(symptom => {
+                        const symptomKey = symptom.toLowerCase().replace(/\s+/g, '');
+                        return LanguageManager.t(symptomKey) || symptom;
+                    }),
                     datasets: [{
                         data: Object.values(stats.symptomDistribution),
                         backgroundColor: [
@@ -206,9 +220,17 @@ const DashboardModule = {
             this.charts.weekly = new Chart(weeklyCtx, {
                 type: 'line',
                 data: {
-                    labels: ['Dushanba', 'Seshanba', 'Chorshanba', 'Payshanba', 'Juma', 'Shanba', 'Yakshanba'],
+                    labels: [
+                        LanguageManager.t('monday'),
+                        LanguageManager.t('tuesday'),
+                        LanguageManager.t('wednesday'),
+                        LanguageManager.t('thursday'),
+                        LanguageManager.t('friday'),
+                        LanguageManager.t('saturday'),
+                        LanguageManager.t('sunday')
+                    ],
                     datasets: [{
-                        label: 'Holatlar',
+                        label: LanguageManager.t('casesPerFaculty'),
                         data: stats.weeklyTrend,
                         borderColor: '#DC143C',
                         backgroundColor: 'rgba(220, 20, 60, 0.1)',
@@ -227,11 +249,24 @@ const DashboardModule = {
             this.charts.monthly = new Chart(monthlyCtx, {
                 type: 'line',
                 data: {
-                    labels: ['Yan', 'Fev', 'Mar', 'Apr', 'May', 'Iyun', 'Iyul', 'Avg', 'Sen', 'Okt', 'Noy', 'Dek'],
+                    labels: [
+                        LanguageManager.t('jan'),
+                        LanguageManager.t('feb'),
+                        LanguageManager.t('mar'),
+                        LanguageManager.t('apr'),
+                        LanguageManager.t('may'),
+                        LanguageManager.t('jun'),
+                        LanguageManager.t('jul'),
+                        LanguageManager.t('aug'),
+                        LanguageManager.t('sep'),
+                        LanguageManager.t('oct'),
+                        LanguageManager.t('nov'),
+                        LanguageManager.t('dec')
+                    ],
                     datasets: [{
-                        label: 'Oylik holatlar',
+                        label: LanguageManager.t('monthlyEvolution'),
                         data: stats.monthlyEvolution,
-                        borderColor: '#005BBD',
+                        borderColor: '#DC143C',
                         backgroundColor: 'rgba(220, 20, 60, 0.2)',
                         fill: true
                     }]

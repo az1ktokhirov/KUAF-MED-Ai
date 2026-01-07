@@ -101,7 +101,7 @@ const AdminModule = {
             <div class="card">
                 <h3 class="card-title" data-i18n="academicPerformanceCorrelation">Akademik ko'rsatkichlar korrelyatsiyasi</h3>
                 <p style="font-size: 1.1rem; line-height: 1.8; color: var(--text-white);">
-                    ${text}
+                Stress bilan bog‘liq alomatlar imtihon haftalarida 32% ga oshadi. Akademik ko‘rsatkichlar yuqori stress darajasi bilan salbiy korrelyatsiyaga ega.
                 </p>
             </div>
         `;
@@ -112,10 +112,22 @@ const AdminModule = {
         if (!container) return;
         
         const recommendations = [
-            { title: LanguageManager.t('improveMentalHealth'), description: 'Talabalar uchun ruhiy salomatlik dasturlarini kengaytirish va yaxshilash' },
-            { title: LanguageManager.t('increaseFitness'), description: 'Jismoniy faollikni rag\'batlantirish va sport dasturlarini oshirish' },
-            { title: LanguageManager.t('nutritionSupport'), description: 'To\'g\'ri ovqatlanish bo\'yicha maslahat va yordam dasturlari yaratish' },
-            { title: LanguageManager.t('earlyFluDetection'), description: 'Gripp va boshqa kasalliklarni erta aniqlash tizimini joriy etish' }
+            { 
+                title: LanguageManager.t('improveMentalHealth'), 
+                description: LanguageManager.t('improveMentalHealthDesc')
+            },
+            { 
+                title: LanguageManager.t('increaseFitness'), 
+                description: LanguageManager.t('increaseFitnessDesc')
+            },
+            { 
+                title: LanguageManager.t('nutritionSupport'), 
+                description: LanguageManager.t('nutritionSupportDesc')
+            },
+            { 
+                title: LanguageManager.t('earlyFluDetection'), 
+                description: LanguageManager.t('earlyFluDetectionDesc')
+            }
         ];
         
         container.innerHTML = `

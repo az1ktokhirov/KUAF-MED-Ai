@@ -36,10 +36,10 @@ const Auth = {
                 
                 return { success: true, role: response.role };
             } else {
-                return { success: false, message: response.message || 'Login failed' };
+                return { success: false, message: response.message || LanguageManager.t('loginFailed') };
             }
         } catch (error) {
-            return { success: false, message: 'Network error' };
+            return { success: false, message: LanguageManager.t('networkError') };
         }
     },
     
