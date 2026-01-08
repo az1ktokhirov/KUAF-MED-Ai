@@ -184,7 +184,7 @@ All endpoints are mocked in `mock-api.js` with 400-700ms delays to simulate real
 2. Enter any email/password
 3. Select "Talaba" (Student) role
 4. Click "Kirish"
-5. On `student.html`, select symptoms (e.g., Headache, Stress, Fatigue)
+5. On `student.html`, select symptoms (e.g., Bosh og'rig'i, Surunkali charchoq, Uyqusizlik)
 6. Click "Belgilarni yuborish"
 7. View risk assessment results
 8. If Low risk → Click "AI Yordamchini ochish"
@@ -263,7 +263,7 @@ To switch language, click the language buttons in the header.
 Edit `js/student.js`:
 ```javascript
 symptoms: [
-    'Headache', 'Fever', 'Insomnia', ...
+    "Bosh og'rig'i", 'Surunkali charchoq', 'Uyqusizlik', ...
     // Add your symptom here
 ]
 ```

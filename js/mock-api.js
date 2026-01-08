@@ -38,21 +38,244 @@ const MockAPI = {
     },
 
     // POST /api/student/report
+    // Combination-based analysis engine for the fixed list of 10 symptoms
     submitReport: async (studentId, symptoms) => {
         await new Promise(resolve => setTimeout(resolve, MockAPI.delay()));
-        
-        const symptomCount = symptoms.length;
-        let risk = "Low";
-        let score = symptomCount * 2;
-        let urgent = false;
 
-        if (score >= 40) {
-            risk = "High";
-            urgent = true;
-        } else if (score >= 25) {
-            risk = "Medium";
+        const set = new Set(symptoms || []);
+
+        const has = (name) => set.has(name);
+
+        const S = {
+            HEADACHE: "Bosh og'rig'i",
+            FATIGUE: 'Surunkali charchoq',
+            INSOMNIA: 'Uyqusizlik',
+            NAUSEA: "Ko'ngil aynishi",
+            COUGH: "Yo‘tal",
+            DIZZINESS: 'Bosh aylanishi',
+            TACHY: 'Yurak tez urishi',
+            DYSPNEA: 'Nafas qisishi',
+            RASH: 'Teri toshmasi va qichishish',
+            ANXIETY: 'Bezovtalik va asabiylashish'
+        };
+
+        const count = symptoms.length;
+
+        // Detect major interacting patterns
+        const patterns = {
+            cardioResp: has(S.DYSPNEA) && (has(S.TACHY) || has(S.DIZZINESS) || has(S.COUGH)),
+            infectionResp: has(S.COUGH) && (has(S.HEADACHE) || has(S.NAUSEA) || has(S.FATIGUE)),
+            neuroVestibular: has(S.HEADACHE) && has(S.DIZZINESS) && (has(S.NAUSEA) || has(S.INSOMNIA)),
+            chronicFatigueStress: has(S.FATIGUE) && has(S.INSOMNIA) && has(S.ANXIETY),
+            allergyDerm: has(S.RASH) && (has(S.COUGH) || has(S.DYSPNEA) || has(S.ANXIETY)),
+            isolatedDerm: has(S.RASH) && count <= 2 && !has(S.DYSPNEA)
+        };
+
+        // Risk level calculation (LOW / MEDIUM / HIGH / CRITICAL)
+        let riskLevel = 'LOW';
+
+        // Critical patterns – suggest emergency-level care
+        if (
+            has(S.DYSPNEA) &&
+            has(S.RASH) &&
+            (has(S.TACHY) || has(S.DIZZINESS) || has(S.NAUSEA))
+        ) {
+            riskLevel = 'CRITICAL';
+        } else if (
+            (has(S.DYSPNEA) && has(S.TACHY)) ||
+            (patterns.cardioResp && count >= 3)
+        ) {
+            riskLevel = 'HIGH';
+        } else if (
+            patterns.infectionResp && (has(S.DYSPNEA) || count >= 4)
+        ) {
+            riskLevel = 'HIGH';
+        } else if (
+            patterns.chronicFatigueStress ||
+            patterns.neuroVestibular ||
+            patterns.allergyDerm ||
+            count >= 3
+        ) {
+            riskLevel = 'MEDIUM';
+        } else {
+            riskLevel = count <= 1 ? 'LOW' : 'MEDIUM';
         }
 
+        // Map riskLevel to legacy risk/score for existing UI pieces
+        const legacyRiskMap = {
+            LOW: 'Low',
+            MEDIUM: 'Medium',
+            HIGH: 'High',
+            CRITICAL: 'High'
+        };
+
+        const baseScore = count * 5;
+        let score = baseScore;
+        if (riskLevel === 'MEDIUM') score += 10;
+        if (riskLevel === 'HIGH') score += 20;
+        if (riskLevel === 'CRITICAL') score += 30;
+
+        const risk = legacyRiskMap[riskLevel];
+        const urgent = riskLevel === 'HIGH' || riskLevel === 'CRITICAL';
+
+        // Possible conditions based on combinations
+        const possibleConditions = [];
+
+        if (patterns.cardioResp) {
+            possibleConditions.push(
+                "Yurak-qon tomir va nafas tizimi yuklamasi (yurak urish tezlashuvi va nafas qisishi birgalikda)",
+                "Panik holat yoki tashvish bilan bog'liq yurak urishi va nafas qisishi"
+            );
+        }
+
+        if (patterns.infectionResp) {
+            possibleConditions.push(
+                "Yuqori nafas yo'llari infeksiyasi (o‘tkir respirator infeksiya, bronxit kabi holatlar)",
+                "Grippga o‘xshash o‘tkir holat (bosh og'rig'i, charchoq va yo‘tal kombinatsiyasi)"
+            );
+        }
+
+        if (patterns.neuroVestibular) {
+            possibleConditions.push(
+                "Migren yoki kuchlanish bosh og'rig'i bosh aylanishi va ko'ngil aynishi bilan",
+                "Vestibulyar buzilish (bosh aylanishi va muvozanat buzilishi bilan kechuvchi holatlar)"
+            );
+        }
+
+        if (patterns.chronicFatigueStress) {
+            possibleConditions.push(
+                "Surunkali charchoq sindromi yoki uzoq davom etuvchi ortiqcha zo‘riqish",
+                "Tashvish buzilishi yoki depressiv holat (uyqusizlik, charchoq va bezovtalik kombinatsiyasi)"
+            );
+        }
+
+        if (patterns.allergyDerm) {
+            possibleConditions.push(
+                "Allergik reaksiyalar (teri toshmasi va qichishish, nafas yoki yo‘tal bilan birgalikda)"
+            );
+        } else if (patterns.isolatedDerm) {
+            possibleConditions.push(
+                "Mahalliy teri kasalligi yoki allergik dermatit (asosan teri toshmasi va qichishish)"
+            );
+        }
+
+        // If still empty, provide broader but common explanations based on combined profile
+        if (possibleConditions.length === 0 && count > 0) {
+            if (count === 1) {
+                possibleConditions.push(
+                    "Yengil darajadagi funksional buzilish yoki vaqtinchalik noqulaylik (hozircha alomatlar cheklangan)"
+                );
+            } else if (count === 2) {
+                possibleConditions.push(
+                    "Bir-birini kuchaytiruvchi, ammo hozircha cheklangan kombinatsiyadagi alomatlar (masalan, ortiqcha zo‘riqish, yengil infeksiya yoki stress bilan bog‘liq holatlar)"
+                );
+            } else {
+                possibleConditions.push(
+                    "Bir nechta tizimlarga ta'sir qiluvchi holat (umumiy ahvolning yomonlashuvi, charchoq va uyqu buzilishi bilan birga keluvchi kasalliklar)"
+                );
+            }
+        }
+
+        // Doctor recommendation – determine exactly ONE dominant specialty (Uzbek names)
+        let recommendedDoctor = null;
+
+        // Strict validation rules (highest priority)
+        if (has(S.COUGH) && has(S.DYSPNEA)) {
+            recommendedDoctor = 'Pulmonolog'; // Yo‘tal + Nafas qisishi
+        } else if (has(S.TACHY) || has(S.DYSPNEA)) {
+            recommendedDoctor = 'Kardiolog'; // Yurak tez urishi OR Nafas qisishi
+        } else if (has(S.ANXIETY) && has(S.INSOMNIA)) {
+            recommendedDoctor = 'Psixiatr'; // Bezovtalik + Uyqusizlik
+        }
+
+        // Pattern-based selection if still not set
+        if (!recommendedDoctor) {
+            if (patterns.allergyDerm || patterns.isolatedDerm) {
+                recommendedDoctor = 'Dermatolog';
+            } else if (patterns.neuroVestibular) {
+                recommendedDoctor = 'Nevrolog';
+            } else if (patterns.chronicFatigueStress) {
+                recommendedDoctor = 'Psixiatr';
+            } else if (patterns.cardioResp) {
+                // Cardio-respiratory without strict triggers
+                recommendedDoctor = has(S.COUGH) ? 'Pulmonolog' : 'Kardiolog';
+            } else if (patterns.infectionResp) {
+                recommendedDoctor = 'Pulmonolog';
+            } else if (has(S.NAUSEA) && count <= 3 && !has(S.COUGH) && !has(S.DYSPNEA)) {
+                recommendedDoctor = 'Gastroenterolog';
+            }
+        }
+
+        // Final fallback: only Terapevt when risk is Past and no dominant direction
+        if (!recommendedDoctor && riskLevel === 'LOW') {
+            recommendedDoctor = 'Terapevt';
+        }
+
+        // Action advice (1–2 short steps)
+        let actionAdvice = '';
+        if (riskLevel === 'LOW') {
+            actionAdvice =
+                "1) Alomatlarni 24–48 soat davomida kuzating. 2) Agar yangi alomatlar qo‘shilsa yoki holat yomonlashsa, shifokor bilan bog‘laning.";
+        } else if (riskLevel === 'MEDIUM') {
+            actionAdvice =
+                "1) Yaqin kunlarda terapevt yoki tegishli mutaxassis bilan maslahatga boring. 2) Dam olish, yetarli suv ichish va kuchli zo‘riqishlardan qochishga harakat qiling.";
+        } else if (riskLevel === 'HIGH') {
+            actionAdvice =
+                "1) Imkon qadar tezroq shifokor ko‘rigiga boring (bugun yoki ertaga). 2) Alomatlar kuchaysa yoki yangi jiddiy belgilar qo‘shilsa, kechiktirmay shoshilinch yordam chaqiring.";
+        } else if (riskLevel === 'CRITICAL') {
+            actionAdvice =
+                "1) Darhol shoshilinch tibbiy yordam chaqiring yoki eng yaqin shifoxonaga boring. 2) Yolg‘iz qolmang va yaqinlaringizni xabardor qiling.";
+        }
+
+        const disclaimer =
+            "Bu tizim natijalari taxminiy bo‘lib, rasmiy tibbiy tashxis emas. Yakuniy baholash va davolash uchun albatta shifokorga murojaat qiling.";
+
+        const detectedSymptoms =
+            symptoms && symptoms.length ? symptoms.join(', ') : "Hech qanday alomat tanlanmadi";
+
+        // Get current language to determine output language
+        const currentLang = LanguageManager?.currentLang || 'uz';
+        
+        // Translate risk level based on language
+        const riskLevelTranslations = {
+            uz: {
+                'LOW': 'Past',
+                'MEDIUM': "O'rta",
+                'HIGH': 'Yuqori',
+                'CRITICAL': 'Juda yuqori (shoshilinch)'
+            },
+            en: {
+                'LOW': 'LOW',
+                'MEDIUM': 'MEDIUM',
+                'HIGH': 'HIGH',
+                'CRITICAL': 'CRITICAL'
+            }
+        };
+        const riskLevelDisplay = riskLevelTranslations[currentLang]?.[riskLevel] || riskLevel;
+        
+        // Structured text block for UI (STRICT format) - Uzbek only when interface is Uzbek
+        let structuredConclusion = '';
+        if (currentLang === 'uz') {
+            structuredConclusion =
+`- Aniqlangan alomatlar: ${detectedSymptoms}
+- Mumkin bo'lgan kasalliklar (kombinatsiyalar asosida): ${possibleConditions.join('; ')}
+- Xavf darajasi: ${riskLevelDisplay}
+- Tavsiya etilgan shifokor: ${recommendedDoctor}
+- Harakat tavsiyalari (1–2 qisqa qadam): ${actionAdvice}
+
+${disclaimer}`;
+        } else {
+            structuredConclusion =
+`- Detected symptoms: ${detectedSymptoms}
+- Possible conditions (based on combinations): ${possibleConditions.join('; ')}
+- Risk level: ${riskLevelDisplay}
+- Recommended doctor: ${recommendedDoctor}
+- Action advice (1–2 short steps only): ${actionAdvice}
+
+${disclaimer}`;
+        }
+
+        // Also keep legacy fields so existing components continue working
         const recommendations = {
             Low: LanguageManager.t('lowRiskRecommendation'),
             Medium: LanguageManager.t('mediumRiskRecommendation'),
@@ -60,16 +283,26 @@ const MockAPI = {
         };
 
         return {
+            // New structured fields
+            riskLevel,
+            detectedSymptoms,
+            possibleConditions: possibleConditions,
+            recommendedDoctor,
+            actionAdvice,
+            disclaimer,
+            conclusionText: structuredConclusion,
+
+            // Legacy fields for compatibility
             risk,
             score,
-            recommendation: recommendations[risk],
+            recommendation: recommendations[risk] || '',
             urgent,
             suggestedDoctors: risk !== "Low" ? [1, 2, 3] : [],
             timestamp: new Date().toISOString()
         };
     },
 
-    // GET /api/doctors
+    // GET /api/doctors - returns all doctors in database
     getDoctors: async () => {
         await new Promise(resolve => setTimeout(resolve, MockAPI.delay()));
         
@@ -77,36 +310,154 @@ const MockAPI = {
             {
                 id: 1,
                 name: "Dr. Alisher Aliev",
-                specialty: "General Practitioner",
-                experience: "15 years",
+                specialty: "Terapevt",
+                specialtyEn: "General Practitioner",
+                experience: "15 yil",
                 price: "50000 UZS",
                 available: true
             },
             {
                 id: 2,
                 name: "Dr. Farida Karimova",
-                specialty: "Psychologist",
-                experience: "10 years",
+                specialty: "Psixolog",
+                specialtyEn: "Psychologist",
+                experience: "10 yil",
                 price: "60000 UZS",
                 available: true
             },
             {
                 id: 3,
                 name: "Dr. Bobur Toshmatov",
-                specialty: "Cardiologist",
-                experience: "20 years",
+                specialty: "Kardiolog",
+                specialtyEn: "Cardiologist",
+                experience: "20 yil",
                 price: "80000 UZS",
                 available: true
             },
             {
                 id: 4,
                 name: "Dr. Malika Yusupova",
-                specialty: "Neurologist",
-                experience: "12 years",
+                specialty: "Nevrolog",
+                specialtyEn: "Neurologist",
+                experience: "12 yil",
                 price: "70000 UZS",
                 available: true
             }
         ];
+    },
+
+    // GET /api/doctors/by-specialty - returns doctors filtered by specialty, auto-generates if needed
+    getDoctorsBySpecialty: async (requiredSpecialty) => {
+        await new Promise(resolve => setTimeout(resolve, MockAPI.delay()));
+        
+        // Get all doctors
+        const allDoctors = await MockAPI.getDoctors();
+        
+        // Map Uzbek specialty names to match database
+        const specialtyMap = {
+            'Terapevt': ['Terapevt', 'General Practitioner'],
+            'Pulmonolog': ['Pulmonolog', 'Pulmonologist'],
+            'Kardiolog': ['Kardiolog', 'Cardiologist'],
+            'Nevrolog': ['Nevrolog', 'Neurologist'],
+            'Dermatolog': ['Dermatolog', 'Dermatologist'],
+            'Gastroenterolog': ['Gastroenterolog', 'Gastroenterologist'],
+            'Psixiatr': ['Psixiatr', 'Psychiatrist'],
+            'Psixolog': ['Psixolog', 'Psychologist']
+        };
+        
+        // Find matching doctors
+        const matchingDoctors = allDoctors.filter(doctor => {
+            const specialties = specialtyMap[requiredSpecialty] || [requiredSpecialty];
+            return specialties.includes(doctor.specialty) || 
+                   (doctor.specialtyEn && specialties.includes(doctor.specialtyEn));
+        });
+        
+        // If no matching doctors found, auto-generate them
+        if (matchingDoctors.length === 0) {
+            const generatedDoctors = MockAPI.generateDoctorsForSpecialty(requiredSpecialty);
+            return generatedDoctors.slice(0, 4); // Return 1-4 doctors
+        }
+        
+        // Return 1-4 matching doctors
+        return matchingDoctors.slice(0, 4);
+    },
+
+    // Auto-generate doctors for a specialty if none exist
+    generateDoctorsForSpecialty: (specialty) => {
+        const doctorTemplates = {
+            'Terapevt': [
+                { name: "Dr. Alisher Aliev", experience: "15 yil", price: "50000 UZS" },
+                { name: "Dr. Rustam Karimov", experience: "12 yil", price: "48000 UZS" },
+                { name: "Dr. Malika Toshmatova", experience: "18 yil", price: "55000 UZS" },
+                { name: "Dr. Farhod Yusupov", experience: "10 yil", price: "45000 UZS" }
+            ],
+            'Pulmonolog': [
+                { name: "Dr. Shavkat Rahimov", experience: "16 yil", price: "75000 UZS" },
+                { name: "Dr. Dilshoda Alimova", experience: "14 yil", price: "72000 UZS" },
+                { name: "Dr. Azizbek Toshmatov", experience: "11 yil", price: "70000 UZS" },
+                { name: "Dr. Nigora Karimova", experience: "13 yil", price: "73000 UZS" }
+            ],
+            'Kardiolog': [
+                { name: "Dr. Bobur Toshmatov", experience: "20 yil", price: "85000 UZS" },
+                { name: "Dr. Gulnora Alieva", experience: "17 yil", price: "82000 UZS" },
+                { name: "Dr. Javohir Rahimov", experience: "15 yil", price: "80000 UZS" },
+                { name: "Dr. Madina Yusupova", experience: "13 yil", price: "78000 UZS" }
+            ],
+            'Nevrolog': [
+                { name: "Dr. Malika Yusupova", experience: "12 yil", price: "70000 UZS" },
+                { name: "Dr. Temur Alimov", experience: "14 yil", price: "72000 UZS" },
+                { name: "Dr. Sevara Karimova", experience: "11 yil", price: "68000 UZS" },
+                { name: "Dr. Bekzod Toshmatov", experience: "16 yil", price: "75000 UZS" }
+            ],
+            'Dermatolog': [
+                { name: "Dr. Zulfiya Rahimova", experience: "10 yil", price: "65000 UZS" },
+                { name: "Dr. Sardor Aliev", experience: "12 yil", price: "68000 UZS" },
+                { name: "Dr. Nigora Toshmatova", experience: "9 yil", price: "62000 UZS" },
+                { name: "Dr. Azamat Karimov", experience: "11 yil", price: "66000 UZS" }
+            ],
+            'Gastroenterolog': [
+                { name: "Dr. Feruza Alimova", experience: "13 yil", price: "70000 UZS" },
+                { name: "Dr. Olimjon Yusupov", experience: "15 yil", price: "73000 UZS" },
+                { name: "Dr. Dilbar Rahimova", experience: "11 yil", price: "68000 UZS" },
+                { name: "Dr. Shohruh Toshmatov", experience: "14 yil", price: "72000 UZS" }
+            ],
+            'Psixiatr': [
+                { name: "Dr. Farida Karimova", experience: "10 yil", price: "60000 UZS" },
+                { name: "Dr. Akmal Aliev", experience: "12 yil", price: "65000 UZS" },
+                { name: "Dr. Lola Yusupova", experience: "9 yil", price: "58000 UZS" },
+                { name: "Dr. Rustam Rahimov", experience: "11 yil", price: "62000 UZS" }
+            ],
+            'Psixolog': [
+                { name: "Dr. Nargiza Toshmatova", experience: "8 yil", price: "55000 UZS" },
+                { name: "Dr. Jamshid Alimov", experience: "10 yil", price: "60000 UZS" },
+                { name: "Dr. Malika Karimova", experience: "7 yil", price: "52000 UZS" },
+                { name: "Dr. Azizbek Yusupov", experience: "9 yil", price: "57000 UZS" }
+            ]
+        };
+        
+        const templates = doctorTemplates[specialty] || doctorTemplates['Terapevt'];
+        const specialtyEnMap = {
+            'Terapevt': 'General Practitioner',
+            'Pulmonolog': 'Pulmonologist',
+            'Kardiolog': 'Cardiologist',
+            'Nevrolog': 'Neurologist',
+            'Dermatolog': 'Dermatologist',
+            'Gastroenterolog': 'Gastroenterologist',
+            'Psixiatr': 'Psychiatrist',
+            'Psixolog': 'Psychologist'
+        };
+        
+        let nextId = 100; // Start from high ID to avoid conflicts
+        
+        return templates.map(template => ({
+            id: nextId++,
+            name: template.name,
+            specialty: specialty,
+            specialtyEn: specialtyEnMap[specialty] || specialty,
+            experience: template.experience,
+            price: template.price,
+            available: true
+        }));
     },
 
     // GET /api/student/history
@@ -117,21 +468,21 @@ const MockAPI = {
             reports: [
                 {
                     date: "2024-01-15",
-                    symptoms: ["Headache", "Fatigue", "Stress"],
+                    symptoms: ["Bosh og'rig'i", "Surunkali charchoq", "Uyqusizlik"],
                     risk: "Medium",
-                    score: 28
+                    score: 55
                 },
                 {
                     date: "2024-01-08",
-                    symptoms: ["Insomnia", "Anxiety"],
-                    risk: "Low",
-                    score: 18
+                    symptoms: ["Uyqusizlik", "Bezovtalik va asabiylashish"],
+                    risk: "Medium",
+                    score: 45
                 },
                 {
                     date: "2023-12-20",
-                    symptoms: ["Fever", "Headache", "Nausea"],
+                    symptoms: ["Yo‘tal", "Nafas qisishi", "Yurak tez urishi"],
                     risk: "High",
-                    score: 42
+                    score: 80
                 }
             ],
             visits: [
@@ -229,15 +580,16 @@ const MockAPI = {
                 "Law": 12
             },
             symptomDistribution: {
-                "Headache": 35,
-                "Stress": 28,
-                "Fatigue": 25,
-                "Anxiety": 20,
-                "Insomnia": 18,
-                "Eye Strain": 15,
-                "Back Pain": 12,
-                "Fever": 10,
-                "Others": 27
+                "Bosh og'rig'i": 35,
+                "Surunkali charchoq": 28,
+                "Uyqusizlik": 25,
+                "Ko'ngil aynishi": 20,
+                "Yo‘tal": 18,
+                "Bosh aylanishi": 15,
+                "Yurak tez urishi": 12,
+                "Nafas qisishi": 10,
+                "Teri toshmasi va qichishish": 8,
+                "Bezovtalik va asabiylashish": 30
             },
             weeklyTrend: [45, 52, 48, 55, 60, 58, 62],
             monthlyEvolution: [180, 195, 210, 225, 240, 255, 270, 285, 300, 315, 330, 345]
@@ -272,7 +624,7 @@ const MockAPI = {
                 "Law": 12,
                 "Economics": 18
             },
-            correlation: "Stress-related symptoms increase 32% during exam weeks. Academic performance shows negative correlation with high stress levels."
+            correlation: "Surunkali charchoq, uyqusizlik va bezovtalik bilan asabiylashish imtihon haftalarida 30–35% ga oshadi. Akademik ko‘rsatkichlar bu alomatlar kombinatsiyasining yuqori darajasi bilan salbiy korrelyatsiyaga ega."
         };
     },
 
@@ -336,7 +688,12 @@ const MockAPI = {
             course: 3,
             email: "azizillo@student.kuaf.uz",
             phone: "+998 90 123 45 67",
-            pastSymptoms: ["Headache", "Fatigue", "Stress", "Insomnia"],
+            pastSymptoms: [
+                "Bosh og'rig'i",
+                "Surunkali charchoq",
+                "Uyqusizlik",
+                "Bezovtalik va asabiylashish"
+            ],
             contact: {
                 email: "azizillo@student.kuaf.uz",
                 phone: "+998 90 123 45 67",
@@ -349,5 +706,10 @@ const MockAPI = {
 // Export for use in other files
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = MockAPI;
+}
+
+// Expose MockAPI globally for HTML access
+if (typeof window !== 'undefined') {
+    window.MockAPI = MockAPI;
 }
 

@@ -101,7 +101,7 @@ const AdminModule = {
             <div class="card">
                 <h3 class="card-title" data-i18n="academicPerformanceCorrelation">Akademik ko'rsatkichlar korrelyatsiyasi</h3>
                 <p style="font-size: 1.1rem; line-height: 1.8; color: var(--text-white);">
-                Stress bilan bog‘liq alomatlar imtihon haftalarida 32% ga oshadi. Akademik ko‘rsatkichlar yuqori stress darajasi bilan salbiy korrelyatsiyaga ega.
+                Surunkali charchoq, uyqusizlik va bezovtalik kabi alomatlar imtihon haftalarida sezilarli darajada oshadi. Akademik ko‘rsatkichlar bu kombinatsiyalardagi yuqori daraja bilan salbiy korrelyatsiyaga ega.
                 </p>
             </div>
         `;

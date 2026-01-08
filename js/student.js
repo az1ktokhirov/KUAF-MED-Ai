@@ -3,71 +3,119 @@
 const StudentModule = {
     selectedSymptoms: [],
     
+    // Fixed list of 10 symptoms (displayed via i18n)
     symptoms: [
-        'Headache', 'Fever', 'Insomnia', 'Fatigue', 'Stress',
-        'Anxiety', 'Dizziness', 'Appetite Loss', 'Back Pain', 'Eye Strain',
-        'Nausea', 'Low Activity', 'Concentration Issue', 'Heart Rate Changes', 'Mood Swings'
+        "Bosh og'rig'i",
+        'Surunkali charchoq',
+        'Uyqusizlik',
+        "Ko'ngil aynishi",
+        "Yo‘tal",
+        'Bosh aylanishi',
+        'Yurak tez urishi',
+        'Nafas qisishi',
+        'Teri toshmasi va qichishish',
+        'Bezovtalik va asabiylashish'
     ],
     
     init() {
-        if (!Auth.requireAuth() || Auth.getRole() !== 'student') {
-            return;
+        try {
+            // Check dependencies
+            if (typeof Auth === 'undefined') {
+                console.error('Auth module not loaded');
+                return;
+            }
+            
+            if (!Auth.requireAuth() || Auth.getRole() !== 'student') {
+                return;
+            }
+            
+            // Always render symptoms first (critical functionality)
+            this.renderSymptoms();
+            
+            // Load history and setup listeners (non-critical)
+            try {
+                this.loadHistory();
+            } catch (err) {
+                console.error('Error loading history:', err);
+            }
+            
+            try {
+                this.setupEventListeners();
+            } catch (err) {
+                console.error('Error setting up event listeners:', err);
+            }
+        } catch (error) {
+            console.error('Error initializing StudentModule:', error);
+            // Still try to render symptoms even if other parts fail
+            try {
+                this.renderSymptoms();
+            } catch (renderError) {
+                console.error('Critical error: Cannot render symptoms', renderError);
+            }
         }
-        
-        this.renderSymptoms();
-        this.loadHistory();
-        this.setupEventListeners();
     },
     
     renderSymptoms() {
         const container = document.getElementById('symptomsContainer');
-        if (!container) return;
+        if (!container) {
+            console.error('Symptoms container not found');
+            return;
+        }
         
-        container.innerHTML = '';
+        // Ensure symptoms array is locked and always has 10 items
+        if (!this.symptoms || this.symptoms.length !== 10) {
+            console.error('Symptoms array is invalid. Expected 10 symptoms.');
+            // Restore the locked list if corrupted
+            this.symptoms = [
+                "Bosh og'rig'i",
+                'Surunkali charchoq',
+                'Uyqusizlik',
+                "Ko'ngil aynishi",
+                "Yo'tal",
+                'Bosh aylanishi',
+                'Yurak tez urishi',
+                'Nafas qisishi',
+                'Teri toshmasi va qichishish',
+                'Bezovtalik va asabiylashish'
+            ];
+        }
         
-        this.symptoms.forEach(symptom => {
-            const card = document.createElement('div');
-            card.className = 'symptom-card';
-            card.dataset.symptom = symptom;
+        try {
+            container.innerHTML = '';
             
-            const checkbox = document.createElement('input');
-            checkbox.type = 'checkbox';
-            checkbox.id = `symptom-${symptom}`;
-            checkbox.value = symptom;
-            
-            const label = document.createElement('label');
-            label.htmlFor = `symptom-${symptom}`;
-            // Map symptom names to translation keys
-            const symptomKeyMap = {
-                'Headache': 'headache',
-                'Fever': 'fever',
-                'Insomnia': 'insomnia',
-                'Fatigue': 'fatigue',
-                'Stress': 'stress',
-                'Anxiety': 'anxiety',
-                'Dizziness': 'dizziness',
-                'Appetite Loss': 'appetiteLoss',
-                'Back Pain': 'backPain',
-                'Eye Strain': 'eyeStrain',
-                'Nausea': 'nausea',
-                'Low Activity': 'lowActivity',
-                'Concentration Issue': 'concentrationIssue',
-                'Heart Rate Changes': 'heartRateChanges',
-                'Mood Swings': 'moodSwings'
-            };
-            const translationKey = symptomKeyMap[symptom] || symptom.toLowerCase().replace(/\s+/g, '');
-            label.textContent = LanguageManager.t(translationKey) || symptom;
-            
-            card.appendChild(checkbox);
-            card.appendChild(label);
-            
-            card.addEventListener('click', () => {
-                checkbox.checked = !checkbox.checked;
-                this.toggleSymptom(symptom, checkbox.checked);
+            this.symptoms.forEach(symptom => {
+                try {
+                    const card = document.createElement('div');
+                    card.className = 'symptom-card';
+                    card.dataset.symptom = symptom;
+                    
+                    const checkbox = document.createElement('input');
+                    checkbox.type = 'checkbox';
+                    checkbox.id = `symptom-${symptom.replace(/[^a-zA-Z0-9]/g, '_')}`;
+                    checkbox.value = symptom;
+                    
+                    const label = document.createElement('label');
+                    label.htmlFor = checkbox.id;
+                    // Use the fixed Uzbek symptom labels directly
+                    label.textContent = symptom;
+                    
+                    card.appendChild(checkbox);
+                    card.appendChild(label);
+                    
+                    card.addEventListener('click', () => {
+                        checkbox.checked = !checkbox.checked;
+                        this.toggleSymptom(symptom, checkbox.checked);
+                    });
+                    
+                    container.appendChild(card);
+                } catch (err) {
+                    console.error('Error rendering symptom:', symptom, err);
+                }
             });
-            
-            container.appendChild(card);
-        });
+        } catch (error) {
+            console.error('Error rendering symptoms:', error);
+            container.innerHTML = '<p style="color: var(--text-light);">Alomatlar yuklanmadi. Sahifani yangilang.</p>';
+        }
     },
     
     toggleSymptom(symptom, selected) {
@@ -108,9 +156,9 @@ const StudentModule = {
             
             this.displayResults(result);
             
-            // Show doctors if risk is not low
-            if (result.risk !== 'Low') {
-                this.loadDoctors();
+            // Show doctors if risk is not low - filter by recommended specialty
+            if (result.risk !== 'Low' && result.recommendedDoctor) {
+                this.loadDoctors(result.recommendedDoctor);
             }
             
             // Reload history
@@ -131,25 +179,77 @@ const StudentModule = {
         
         resultsContainer.style.display = 'block';
         resultsContainer.innerHTML = '';
+
+        // Get raw risk level from result
+        const riskLevelRaw = result.riskLevel || (result.risk ? result.risk.toUpperCase() : 'LOW');
+        const riskClass = riskLevelRaw.toLowerCase();
         
-        const riskClass = result.risk.toLowerCase();
+        // Translate risk level to Uzbek when interface is Uzbek
+        const currentLang = LanguageManager?.currentLang || 'uz';
+        const riskLevelTranslations = {
+            uz: {
+                'LOW': 'Past',
+                'MEDIUM': "O'rta",
+                'HIGH': 'Yuqori',
+                'CRITICAL': 'Juda yuqori (shoshilinch)'
+            },
+            en: {
+                'LOW': 'LOW',
+                'MEDIUM': 'MEDIUM',
+                'HIGH': 'HIGH',
+                'CRITICAL': 'CRITICAL'
+            }
+        };
+        // Single declaration of riskLevel (translated)
+        const riskLevel = riskLevelTranslations[currentLang]?.[riskLevelRaw] || riskLevelRaw;
+
         const riskColors = {
             low: 'var(--text-white)',
             medium: '#FFC107',
-            high: 'var(--primary-red-light)'
+            high: 'var(--primary-red-light)',
+            critical: '#ff5252'
+        };
+
+        const detectedSymptomsText = result.detectedSymptoms || (result.symptoms || []).join(', ');
+        const possibleConditionsText = Array.isArray(result.possibleConditions)
+            ? result.possibleConditions.join('; ')
+            : (result.possibleConditions || '');
+        const recommendedDoctor = result.recommendedDoctor || '';
+        const actionAdvice = result.actionAdvice || '';
+        const disclaimer =
+            result.disclaimer ||
+            "Bu tizim natijalari taxminiy bo'lib, rasmiy tibbiy tashxis emas. Yakuniy baholash uchun shifokorga murojaat qiling.";
+        
+        // Use Uzbek labels when interface is Uzbek, English when interface is English
+        const labels = currentLang === 'uz' ? {
+            detectedSymptoms: "Aniqlangan alomatlar",
+            possibleConditions: "Mumkin bo'lgan kasalliklar (kombinatsiyalar asosida)",
+            riskLevel: "Xavf darajasi",
+            recommendedDoctor: "Tavsiya etilgan shifokor",
+            actionAdvice: "Harakat tavsiyalari (1–2 qisqa qadam)"
+        } : {
+            detectedSymptoms: "Detected symptoms",
+            possibleConditions: "Possible conditions (based on combinations)",
+            riskLevel: "Risk level",
+            recommendedDoctor: "Recommended doctor",
+            actionAdvice: "Action advice (1–2 short steps only)"
         };
         
         const resultCard = document.createElement('div');
         resultCard.className = `risk-result ${riskClass}`;
         resultCard.innerHTML = `
-            <div class="risk-level" style="color: ${riskColors[riskClass]}">
-                ${LanguageManager.t(`${riskClass}Risk`)} ${LanguageManager.t('riskLevel')}
+            <div class="risk-level" style="color: ${riskColors[riskClass] || 'var(--text-white)'}">
+                ${labels.riskLevel}: ${riskLevel}
             </div>
-            <div class="risk-score" style="color: ${riskColors[riskClass]}">
-                ${result.score}
+            <div style="text-align: left; margin-top: 1rem; font-size: 1rem; line-height: 1.7;">
+                <p>- <strong>${labels.detectedSymptoms}:</strong> ${detectedSymptomsText || '-'}</p>
+                <p>- <strong>${labels.possibleConditions}:</strong> ${possibleConditionsText || '-'}</p>
+                <p>- <strong>${labels.riskLevel}:</strong> ${riskLevel}</p>
+                <p>- <strong>${labels.recommendedDoctor}:</strong> ${recommendedDoctor}</p>
+                <p>- <strong>${labels.actionAdvice}:</strong> ${actionAdvice}</p>
             </div>
-            <div style="margin-top: 1rem; font-size: 1.1rem;">
-                ${result.recommendation}
+            <div style="margin-top: 1rem; font-size: 0.9rem; color: var(--text-light);">
+                ${disclaimer}
             </div>
         `;
         
@@ -175,7 +275,7 @@ const StudentModule = {
         resultsContainer.scrollIntoView({ behavior: 'smooth' });
     },
     
-    async loadDoctors() {
+    async loadDoctors(recommendedSpecialty) {
         const doctorsContainer = document.getElementById('doctorsContainer');
         if (!doctorsContainer) return;
         
@@ -183,7 +283,13 @@ const StudentModule = {
         doctorsContainer.innerHTML = '<div class="loading"><div class="spinner"></div></div>';
         
         try {
-            const doctors = await MockAPI.getDoctors();
+            // Get doctors filtered by recommended specialty (auto-generates if needed)
+            const doctors = await MockAPI.getDoctorsBySpecialty(recommendedSpecialty);
+            
+            if (!doctors || doctors.length === 0) {
+                doctorsContainer.innerHTML = `<p>${LanguageManager.t('doctorsNotLoaded')}</p>`;
+                return;
+            }
             
             doctorsContainer.innerHTML = `
                 <h3 class="card-title" data-i18n="doctors">Shifokorlar</h3>
@@ -192,17 +298,16 @@ const StudentModule = {
             
             const grid = doctorsContainer.querySelector('.doctors-grid');
             
+            // Display only matching doctors (1-4 doctors)
             doctors.forEach(doctor => {
-                let specialtyKey = doctor.specialty.toLowerCase().replace(/\s+/g, '');
-                // Handle special cases
-                if (specialtyKey === 'generalpractitioner') specialtyKey = 'generalPractitioner';
-                const translatedSpecialty = LanguageManager.t(specialtyKey) || doctor.specialty;
+                // Use Uzbek specialty directly (already in Uzbek in database)
+                const specialtyDisplay = doctor.specialty || doctor.specialtyEn;
                 
                 const card = document.createElement('div');
                 card.className = 'doctor-card';
                 card.innerHTML = `
                     <div class="doctor-name">${doctor.name}</div>
-                    <div class="doctor-specialty">${translatedSpecialty}</div>
+                    <div class="doctor-specialty">${specialtyDisplay}</div>
                     <div style="margin: 1rem 0; color: var(--text-light);">
                         <div>${LanguageManager.t('experience')}: ${doctor.experience}</div>
                         <div>${LanguageManager.t('price')}: ${doctor.price}</div>
@@ -214,6 +319,7 @@ const StudentModule = {
                 grid.appendChild(card);
             });
         } catch (error) {
+            console.error('Doctors load error:', error);
             doctorsContainer.innerHTML = `<p>${LanguageManager.t('doctorsNotLoaded')}</p>`;
         }
     },
@@ -261,4 +367,9 @@ const StudentModule = {
         }
     }
 };
+
+// Expose StudentModule globally for HTML access
+if (typeof window !== 'undefined') {
+    window.StudentModule = StudentModule;
+}
 

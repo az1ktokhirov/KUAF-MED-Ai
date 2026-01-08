@@ -590,6 +590,14 @@ select::-webkit-scrollbar-thumb:hover {
     animation: shake 0.5s ease-in-out;
 }
 
+/* Critical (emergency-level) risk */
+.risk-result.critical {
+    background: rgba(139, 0, 0, 0.85);
+    border: 2px solid #ff5252;
+    box-shadow: 0 0 20px rgba(255, 82, 82, 0.8);
+    animation: shake 0.6s ease-in-out, urgentPulse 1.2s ease-in-out infinite;
+}
+
 @keyframes shake {
     0%, 100% { transform: translateX(0); }
     25% { transform: translateX(-10px); }

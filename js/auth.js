@@ -84,3 +84,8 @@ const Auth = {
     }
 };
 
+// Expose Auth globally for HTML access
+if (typeof window !== 'undefined') {
+    window.Auth = Auth;
+}
+

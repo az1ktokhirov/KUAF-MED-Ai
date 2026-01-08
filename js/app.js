@@ -32,25 +32,11 @@ const lang = {
         doctorRole: "Shifokor",
         adminRole: "Administrator",
         
-        // Symptoms
+        // Symptoms (fixed list of 10)
         symptoms: "Belgilar",
         selectSymptoms: "Belgilarni tanlang",
         submitSymptoms: "Belgilarni yuborish",
-        headache: "Bosh og'rig'i",
-        fever: "Isitma",
-        insomnia: "Uyqusizlik",
-        fatigue: "Charchoq",
-        stress: "Stress",
-        anxiety: "Tashvish",
-        dizziness: "Bosh aylanishi",
-        appetiteLoss: "Ishtaha yo'qolishi",
-        backPain: "Orqa og'rig'i",
-        eyeStrain: "Ko'z charchog'i",
-        nausea: "Ko'ngil aynishi",
-        lowActivity: "Past faollik",
-        concentrationIssue: "Diqqat muammosi",
-        heartRateChanges: "Yurak urishi o'zgarishi",
-        moodSwings: "Kayfiyat o'zgarishi",
+        // Keys kept for potential future i18n wiring, but UI currently shows Uzbek labels directly
         
         // Results
         riskLevel: "Xavf darajasi",
@@ -203,10 +189,16 @@ const lang = {
         dec: "Dek",
         
         // Doctor specialties
-        generalPractitioner: "Umumiy shifokor",
+        generalPractitioner: "Terapevt",
+        therapist: "Terapevt",
+        gp: "Terapevt",
         psychologist: "Psixolog",
         cardiologist: "Kardiolog",
         neurologist: "Nevrolog",
+        pulmonologist: "Pulmonolog",
+        dermatologist: "Dermatolog",
+        gastroenterologist: "Gastroenterolog",
+        psychiatrist: "Psixiatr",
         
         // Booking
         appointmentBookedSuccessfully: "Uchrashuv muvaffaqiyatli belgilandi"
@@ -242,25 +234,10 @@ const lang = {
         doctorRole: "Doctor",
         adminRole: "Administrator",
         
-        // Symptoms
+        // Symptoms (fixed list is currently displayed in Uzbek directly on the UI)
         symptoms: "Symptoms",
         selectSymptoms: "Select Symptoms",
         submitSymptoms: "Submit Symptoms",
-        headache: "Headache",
-        fever: "Fever",
-        insomnia: "Insomnia",
-        fatigue: "Fatigue",
-        stress: "Stress",
-        anxiety: "Anxiety",
-        dizziness: "Dizziness",
-        appetiteLoss: "Appetite Loss",
-        backPain: "Back Pain",
-        eyeStrain: "Eye Strain",
-        nausea: "Nausea",
-        lowActivity: "Low Activity",
-        concentrationIssue: "Concentration Issue",
-        heartRateChanges: "Heart Rate Changes",
-        moodSwings: "Mood Swings",
         
         // Results
         riskLevel: "Risk Level",
@@ -414,9 +391,15 @@ const lang = {
         
         // Doctor specialties
         generalPractitioner: "General Practitioner",
+        therapist: "Therapist",
+        gp: "GP",
         psychologist: "Psychologist",
         cardiologist: "Cardiologist",
         neurologist: "Neurologist",
+        pulmonologist: "Pulmonologist",
+        dermatologist: "Dermatologist",
+        gastroenterologist: "Gastroenterologist",
+        psychiatrist: "Psychiatrist",
         
         // Booking
         appointmentBookedSuccessfully: "Appointment booked successfully"
@@ -502,4 +485,10 @@ const Utils = {
         window.location.href = url;
     }
 };
+
+// Expose modules globally for HTML access
+if (typeof window !== 'undefined') {
+    window.LanguageManager = LanguageManager;
+    window.Utils = Utils;
+}
 
