@@ -185,7 +185,10 @@ const StudentModule = {
         const riskClass = riskLevelRaw.toLowerCase();
         
         // Translate risk level to Uzbek when interface is Uzbek
-        const currentLang = LanguageManager?.currentLang || 'uz';
+        var currentLang = (typeof LanguageManager !== 'undefined' && LanguageManager.currentLang)
+  ? LanguageManager.currentLang
+  : 'uz';
+
         const riskLevelTranslations = {
             uz: {
                 'LOW': 'Past',
@@ -223,16 +226,16 @@ const StudentModule = {
         // Use Uzbek labels when interface is Uzbek, English when interface is English
         const labels = currentLang === 'uz' ? {
             detectedSymptoms: "Aniqlangan alomatlar",
-            possibleConditions: "Mumkin bo'lgan kasalliklar (kombinatsiyalar asosida)",
+            possibleConditions: "Mumkin bo'lgan holatlar",
             riskLevel: "Xavf darajasi",
             recommendedDoctor: "Tavsiya etilgan shifokor",
-            actionAdvice: "Harakat tavsiyalari (1–2 qisqa qadam)"
+            actionAdvice: "Harakat tavsiyalari"
         } : {
             detectedSymptoms: "Detected symptoms",
-            possibleConditions: "Possible conditions (based on combinations)",
+            possibleConditions: "Possible conditions",
             riskLevel: "Risk level",
             recommendedDoctor: "Recommended doctor",
-            actionAdvice: "Action advice (1–2 short steps only)"
+            actionAdvice: "Action advice"
         };
         
         const resultCard = document.createElement('div');

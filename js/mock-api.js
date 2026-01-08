@@ -123,39 +123,39 @@ const MockAPI = {
 
         if (patterns.cardioResp) {
             possibleConditions.push(
-                "Yurak-qon tomir va nafas tizimi yuklamasi (yurak urish tezlashuvi va nafas qisishi birgalikda)",
+                "Yurak-qon tomir va nafas tizimi yuklamasi",
                 "Panik holat yoki tashvish bilan bog'liq yurak urishi va nafas qisishi"
             );
         }
 
         if (patterns.infectionResp) {
             possibleConditions.push(
-                "Yuqori nafas yo'llari infeksiyasi (o‘tkir respirator infeksiya, bronxit kabi holatlar)",
-                "Grippga o‘xshash o‘tkir holat (bosh og'rig'i, charchoq va yo‘tal kombinatsiyasi)"
+                "Yuqori nafas yo'llari infeksiyasi",
+                "Grippga o'xshash o'tkir holat"
             );
         }
 
         if (patterns.neuroVestibular) {
             possibleConditions.push(
-                "Migren yoki kuchlanish bosh og'rig'i bosh aylanishi va ko'ngil aynishi bilan",
-                "Vestibulyar buzilish (bosh aylanishi va muvozanat buzilishi bilan kechuvchi holatlar)"
+                "Migren yoki kuchlanish bosh og'rig'i",
+                "Vestibulyar buzilish"
             );
         }
 
         if (patterns.chronicFatigueStress) {
             possibleConditions.push(
-                "Surunkali charchoq sindromi yoki uzoq davom etuvchi ortiqcha zo‘riqish",
-                "Tashvish buzilishi yoki depressiv holat (uyqusizlik, charchoq va bezovtalik kombinatsiyasi)"
+                "Surunkali charchoq sindromi yoki uzoq davom etuvchi ortiqcha zo'riqish",
+                "Tashvish buzilishi yoki depressiv holat"
             );
         }
 
         if (patterns.allergyDerm) {
             possibleConditions.push(
-                "Allergik reaksiyalar (teri toshmasi va qichishish, nafas yoki yo‘tal bilan birgalikda)"
+                "Allergik reaksiyalar"
             );
         } else if (patterns.isolatedDerm) {
             possibleConditions.push(
-                "Mahalliy teri kasalligi yoki allergik dermatit (asosan teri toshmasi va qichishish)"
+                "Mahalliy teri kasalligi yoki allergik dermatit"
             );
         }
 
@@ -163,21 +163,21 @@ const MockAPI = {
         if (possibleConditions.length === 0 && count > 0) {
             if (count === 1) {
                 possibleConditions.push(
-                    "Yengil darajadagi funksional buzilish yoki vaqtinchalik noqulaylik (hozircha alomatlar cheklangan)"
+                    "Yengil darajadagi funksional buzilish yoki vaqtinchalik noqulaylik"
                 );
             } else if (count === 2) {
                 possibleConditions.push(
-                    "Bir-birini kuchaytiruvchi, ammo hozircha cheklangan kombinatsiyadagi alomatlar (masalan, ortiqcha zo‘riqish, yengil infeksiya yoki stress bilan bog‘liq holatlar)"
+                    "Hozirgi alomatlar bir-biriga bog'liq bo'lishi mumkin"
                 );
             } else {
                 possibleConditions.push(
-                    "Bir nechta tizimlarga ta'sir qiluvchi holat (umumiy ahvolning yomonlashuvi, charchoq va uyqu buzilishi bilan birga keluvchi kasalliklar)"
+                    "Bir nechta tizimlarga ta'sir qiluvchi holat"
                 );
             }
         }
 
         // Doctor recommendation – determine exactly ONE dominant specialty (Uzbek names)
-        let recommendedDoctor = null;
+        var recommendedDoctor = null;
 
         // Strict validation rules (highest priority)
         if (has(S.COUGH) && has(S.DYSPNEA)) {
@@ -221,7 +221,7 @@ const MockAPI = {
                 "1) Yaqin kunlarda terapevt yoki tegishli mutaxassis bilan maslahatga boring. 2) Dam olish, yetarli suv ichish va kuchli zo‘riqishlardan qochishga harakat qiling.";
         } else if (riskLevel === 'HIGH') {
             actionAdvice =
-                "1) Imkon qadar tezroq shifokor ko‘rigiga boring (bugun yoki ertaga). 2) Alomatlar kuchaysa yoki yangi jiddiy belgilar qo‘shilsa, kechiktirmay shoshilinch yordam chaqiring.";
+                "1) Imkon qadar tezroq shifokor ko'rigiga boring. 2) Alomatlar kuchaysa yoki yangi jiddiy belgilar qo'shilsa, kechiktirmay shoshilinch yordam chaqiring.";
         } else if (riskLevel === 'CRITICAL') {
             actionAdvice =
                 "1) Darhol shoshilinch tibbiy yordam chaqiring yoki eng yaqin shifoxonaga boring. 2) Yolg‘iz qolmang va yaqinlaringizni xabardor qiling.";
@@ -258,19 +258,19 @@ const MockAPI = {
         if (currentLang === 'uz') {
             structuredConclusion =
 `- Aniqlangan alomatlar: ${detectedSymptoms}
-- Mumkin bo'lgan kasalliklar (kombinatsiyalar asosida): ${possibleConditions.join('; ')}
+- Mumkin bo'lgan holatlar: ${possibleConditions.join('; ')}
 - Xavf darajasi: ${riskLevelDisplay}
 - Tavsiya etilgan shifokor: ${recommendedDoctor}
-- Harakat tavsiyalari (1–2 qisqa qadam): ${actionAdvice}
+- Harakat tavsiyalari: ${actionAdvice}
 
 ${disclaimer}`;
         } else {
             structuredConclusion =
 `- Detected symptoms: ${detectedSymptoms}
-- Possible conditions (based on combinations): ${possibleConditions.join('; ')}
+- Possible conditions: ${possibleConditions.join('; ')}
 - Risk level: ${riskLevelDisplay}
 - Recommended doctor: ${recommendedDoctor}
-- Action advice (1–2 short steps only): ${actionAdvice}
+- Action advice: ${actionAdvice}
 
 ${disclaimer}`;
         }
